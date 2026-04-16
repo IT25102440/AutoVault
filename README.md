@@ -1,4 +1,4 @@
-# 🛞 AutoVault: Second-Hand Car Platform
+# 🏎️ AutoVault: Second-Hand Car Platform
 SE1020 OOP Project
 
 ![Java](https://img.shields.io/badge/Java-17-blue.svg)
@@ -18,18 +18,21 @@ SE1020 OOP Project
 | Information Hiding | Strict layer separation, passwords never exposed in API |
 
 ## 👥 Team Members
-- IT 25103697 - Herath H.M.K.N.B.
-- IT 25101445 - Fernando W.C.N.
-- IT 25102440 - Gunathilaka D.C.N.
-- IT 25200167 - Wijewardana K.M.N.J
-- IT 25100476 - Dilmith A.C
-- IT 25101707 - Dewujith H.S.R.
+
+| Student ID | Name |
+|------------|------|
+| IT 25102440 | Gunathilaka D.C.N. |
+| IT 25103697 | Herath H.M.K.N.B. |
+| IT 25101445 | Fernando W.C.N. |
+| IT 25200167 | Wijewardana K.M.N.J |
+| IT 25100476 | Dilmith A.C |
+| IT 25101707 | Dewujith H.S.R. |
 
 ## 🔧 Setup
-1. Clone repo `https://github.com/IT25102440/AutoVault.git`
+1. Clone repo
 2. Configure MySQL in `application.properties`
 3. Create `carplatform` database
 4. Run the app
 
 ---
-© 2026 AutoVault Team
+© 2025 AutoVault Team
