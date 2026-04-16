@@ -29,7 +29,7 @@ SE1020 OOP Project
 | IT 25101707 | Dewujith H.S.R. |
 
 ## 🔧 Setup
-1. Clone repo
+1. Clone repo `https://github.com/IT25102440/AutoVault.git`
 2. Configure MySQL in `application.properties`
 3. Create `carplatform` database
 4. Run the app
