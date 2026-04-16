@@ -1,5 +1,5 @@
-# 🏎️ AutoVault: Second-Hand Car Platform
-SE1020 OOP Project
+# 🛞 AutoVault: Second-Hand Car Sales Platform
+SE1020 OOP Project : Group WD149
 
 ![Java](https://img.shields.io/badge/Java-17-blue.svg)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.1-brightgreen.svg)
@@ -35,4 +35,4 @@ SE1020 OOP Project
 4. Run the app
 
 ---
-© 2025 AutoVault Team
+© 2026 AutoVault Team
