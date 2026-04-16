@@ -1,4 +1,4 @@
-# 🏎️ AutoVault: Second-Hand Car Platform
+# 🛞 AutoVault: Second-Hand Car Platform
 SE1020 OOP Project
 
 ![Java](https://img.shields.io/badge/Java-17-blue.svg)
