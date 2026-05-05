@@ -32,7 +32,7 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found: " + email));
     }
 
-    // Get all users who are Sellers (for admin dashboard)
+    //get all users who are Sellers (for admin dashboard)
     public List<User> getAllSellers() {
         return userRepository.findAll()
                 .stream()
@@ -40,7 +40,7 @@ public class UserService {
                 .toList();
     }
 
-    // Delete a seller by ID (admin action)
+    //delete a seller by ID (admin action)
     public void deleteSeller(Long id) {
         userRepository.deleteById(id);
     }
