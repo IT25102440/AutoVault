@@ -53,9 +53,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/api/cars/**").permitAll()
                         .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
-                        .requestMatchers("/", "/index.html", "/login.html",
-                                "/register.html", "/car-detail.html",
-                                "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers(
+                                "/", "/index.html",
+                                "/login", "/login/", "/login/**",
+                                "/register", "/register/", "/register/**",
+                                "/car-detail", "/car-detail/", "/car-detail/**",
+                                "/css/**", "/js/**", "/images/**"
+                        ).permitAll()
                         .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/api/seller/**").hasRole("SELLER")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")

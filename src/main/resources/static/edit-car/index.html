@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>AutoLane — Edit Car</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --black: #0d0d0d;
+            --white: #f5f4f0;
+            --accent: #e8ff47;
+            --grey: #1a1a1a;
+            --muted: #888;
+            --card-bg: #161616;
+            --border: #2a2a2a;
+            --error: #ff4444;
+            --success: #47ff8a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            background: var(--black);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar-brand {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            color: var(--accent) !important;
+            letter-spacing: 2px;
+            text-decoration: none;
+        }
+        .navbar-brand span { color: var(--white); }
+        .nav-btn {
+            border: 1px solid var(--border);
+            color: var(--muted);
+            background: transparent;
+            padding: 0.4rem 1.2rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .nav-btn:hover { border-color: var(--white); color: var(--white); }
+
+        /* ── PAGE LAYOUT ── */
+        .page-wrap {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem 4rem;
+        }
+
+        .page-eyebrow {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .page-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            letter-spacing: 1px;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        .page-title span {
+            color: var(--muted);
+            font-size: 1.5rem;
+            display: block;
+            margin-top: 0.2rem;
+        }
+        .page-sub {
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-bottom: 2.5rem;
+        }
+
+        /* ── FORM CARD ── */
+        .form-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 2rem;
+        }
+
+        /* ── SECTION DIVIDER ── */
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .form-section:last-of-type { border-bottom: none; margin-bottom: 0; }
+        .form-section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-bottom: 1.2rem;
+        }
+
+        /* ── FIELD GRID ── */
+        .field-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        @media (max-width: 600px) { .field-grid { grid-template-columns: 1fr; } }
+
+        /* ── FIELD ── */
+        .field-wrap { display: flex; flex-direction: column; }
+        .field-wrap label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+        .field-wrap input {
+            background: var(--grey);
+            border: 1px solid var(--border);
+            color: var(--white);
+            padding: 0.85rem 1rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+        .field-wrap input:focus { border-color: var(--accent); }
+        .field-wrap input::placeholder { color: #555; }
+
+        /* ── CURRENT IMAGE ── */
+        .current-image-wrap {
+            margin-bottom: 1rem;
+        }
+        .current-image-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+        .current-image-wrap img {
+            width: 100%;
+            max-height: 220px;
+            object-fit: cover;
+            display: block;
+            border: 1px solid var(--border);
+        }
+        .current-image-wrap .no-image {
+            background: var(--grey);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+        .replace-label {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ── UPLOAD ZONE ── */
+        .upload-zone {
+            border: 2px dashed var(--border);
+            background: var(--grey);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            position: relative;
+        }
+        .upload-zone:hover,
+        .upload-zone.dragover {
+            border-color: var(--accent);
+            background: #1e1e1e;
+        }
+        .upload-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+        .upload-icon { font-size: 1.8rem; margin-bottom: 0.5rem; display: block; }
+        .upload-label { font-size: 0.85rem; color: var(--white); font-weight: 500; }
+        .upload-hint { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+        .upload-hint span { color: var(--accent); }
+
+        /* ── NEW IMAGE PREVIEW ── */
+        .new-preview {
+            display: none;
+            margin-top: 0.75rem;
+            position: relative;
+        }
+        .new-preview img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+        .new-preview .remove-img {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(0,0,0,0.8);
+            color: var(--error);
+            border: 1px solid var(--error);
+            padding: 0.3rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        /* ── ALERT ── */
+        .alert-msg {
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        .alert-msg.show { display: block; }
+        .alert-msg.error {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+        .alert-msg.success {
+            background: rgba(71, 255, 138, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        /* ── LOADING STATE ── */
+        .state-wrap {
+            text-align: center;
+            padding: 5rem 2rem;
+            color: var(--muted);
+        }
+        .state-wrap .state-icon { font-size: 3rem; display: block; margin-bottom: 1rem; }
+
+        /* ── FORM ACTIONS ── */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+        .submit-btn {
+            flex: 1;
+            background: var(--accent);
+            color: var(--black);
+            border: 1px solid var(--accent);
+            padding: 0.9rem;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .submit-btn:hover { background: transparent; color: var(--accent); }
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .cancel-btn {
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            padding: 0.9rem 1.5rem;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .cancel-btn:hover { border-color: var(--white); color: var(--white); }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar d-flex justify-content-between align-items-center">
+    <a href="/" class="navbar-brand">Auto<span>Lane</span></a>
+    <a href="/seller-dashboard" class="nav-btn">← Dashboard</a>
+</nav>
+
+<!-- LOADING STATE — shown while car data is being fetched -->
+<div id="loadingState" class="state-wrap">
+    <span class="state-icon">⏳</span>
+    <p>Loading car details...</p>
+</div>
+
+<!-- ERROR STATE — shown if car not found or not owned by this seller -->
+<div id="errorState" class="state-wrap" style="display:none;">
+    <span class="state-icon">🚫</span>
+    <p>Car not found or you don't have permission to edit it.</p>
+    <a href="/seller-dashboard" style="color:var(--accent);margin-top:1rem;display:inline-block;">← Back to Dashboard</a>
+</div>
+
+<!-- MAIN FORM — hidden until car data loads -->
+<div class="page-wrap" id="formWrap" style="display:none;">
+
+    <div class="page-eyebrow">Edit Listing</div>
+    <div class="page-title">
+        Update Car
+        <span id="carSubtitle"></span>
+    </div>
+    <div class="page-sub">Make your changes below and save. Updates are visible immediately.</div>
+
+    <div class="alert-msg error" id="errorMsg"></div>
+    <div class="alert-msg success" id="successMsg"></div>
+
+    <div class="form-card">
+
+        <!-- SECTION 1: Car Details -->
+        <div class="form-section">
+            <div class="form-section-title">Car Details</div>
+            <div class="field-grid">
+                <div class="field-wrap">
+                    <label for="brand">Brand *</label>
+                    <input type="text" id="brand" required />
+                </div>
+                <div class="field-wrap">
+                    <label for="model">Model *</label>
+                    <input type="text" id="model" required />
+                </div>
+                <div class="field-wrap">
+                    <label for="year">Year *</label>
+                    <input type="number" id="year" min="1990" max="2025" required />
+                </div>
+                <div class="field-wrap">
+                    <label for="mileage">Mileage (km) *</label>
+                    <input type="number" id="mileage" min="0" required />
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: Pricing & Location -->
+        <div class="form-section">
+            <div class="form-section-title">Pricing & Location</div>
+            <div class="field-grid">
+                <div class="field-wrap">
+                    <label for="price">Price (USD) *</label>
+                    <input type="number" id="price" min="0" step="0.01" required />
+                </div>
+                <div class="field-wrap">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" />
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: Image -->
+        <div class="form-section">
+            <div class="form-section-title">Car Photo</div>
+
+            <!-- Shows the existing image already saved on the server -->
+            <div class="current-image-wrap" id="currentImageWrap">
+                <div class="current-image-label">Current Photo</div>
+                <div id="currentImageSlot"></div>
+            </div>
+
+            <!-- Option to replace with a new image -->
+            <div class="replace-label">Replace Photo (optional)</div>
+            <div class="upload-zone" id="uploadZone">
+                <input
+                        type="file"
+                        id="imageInput"
+                        name="image"
+                        accept="image/jpeg,image/png,image/webp"
+                />
+                <span class="upload-icon">📷</span>
+                <div class="upload-label">Click or drag to upload a new photo</div>
+                <div class="upload-hint">Leave empty to keep the <span>current photo</span></div>
+            </div>
+
+            <div class="new-preview" id="newPreview">
+                <img id="previewImg" src="" alt="New preview" />
+                <button class="remove-img" onclick="removeNewImage()">✕ Remove</button>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="/seller-dashboard" class="cancel-btn">Cancel</a>
+            <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">
+                Save Changes →
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 AutoLane · SE1020 University Project</p>
+</footer>
+
+<script>
+    // Store the car ID globally so handleSubmit() can use it
+    let carId = null;
+
+    // ── ENTRY POINT ──
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Step 1: Auth guard — must be a logged-in SELLER
+        try {
+            const authRes = await fetch('/api/auth/me', { credentials: 'include' });
+            if (!authRes.ok) { window.location.href = '/login'; return; }
+            const user = await authRes.json();
+            if (user.role !== 'SELLER') { window.location.href = '/login'; return; }
+        } catch (err) {
+            window.location.href = '/login';
+            return;
+        }
+
+        // Step 2: Read the car ID from the URL
+        const params = new URLSearchParams(window.location.search);
+        carId = params.get('id');
+
+        if (!carId) {
+            // No ID in URL — can't edit without knowing which car
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+            return;
+        }
+
+        // Step 3: Fetch the car's current data and pre-fill the form
+        await loadCarData(carId);
+
+        // Step 4: Set up image upload zone
+        setupUploadZone();
+    });
+
+    // ── LOAD CAR DATA AND PRE-FILL FORM ──
+    // This is what makes edit-car different from add-car.
+    // We fetch the existing car, then populate every input field with its values.
+    async function loadCarData(id) {
+        try {
+            // We use the seller endpoint here — it verifies the car belongs
+            // to the logged-in seller. If someone tries to edit a car they
+            // don't own, the backend returns 403 or 404.
+            const res = await fetch(`/api/seller/cars/${id}`, { credentials: 'include' });
+
+            if (!res.ok) {
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('errorState').style.display = 'block';
+                return;
+            }
+
+            const car = await res.json();
+
+            // Hide loading, show form
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('formWrap').style.display = 'block';
+
+            // Update page subtitle with the car name
+            document.getElementById('carSubtitle').textContent = `${car.brand} ${car.model}`;
+            document.title = `AutoLane — Edit ${car.brand} ${car.model}`;
+
+            // Pre-fill all the form fields with current values
+            document.getElementById('brand').value = car.brand || '';
+            document.getElementById('model').value = car.model || '';
+            document.getElementById('year').value = car.year || '';
+            document.getElementById('mileage').value = car.mileage || '';
+            document.getElementById('price').value = car.price || '';
+            document.getElementById('location').value = car.location || '';
+
+            // Show the current image if one exists
+            const imageSlot = document.getElementById('currentImageSlot');
+            if (car.imagePath) {
+                imageSlot.innerHTML = `
+            <img src="/uploads/${car.imagePath}" alt="${car.brand} ${car.model}"
+                 onerror="this.outerHTML='<div class=\\'no-image\\'>No photo available</div>'" />
+          `;
+            } else {
+                imageSlot.innerHTML = `<div class="no-image">No photo currently uploaded.</div>`;
+            }
+
+        } catch (err) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+        }
+    }
+
+    // ── IMAGE UPLOAD ZONE ──
+    function setupUploadZone() {
+        const input = document.getElementById('imageInput');
+        const zone = document.getElementById('uploadZone');
+
+        input.addEventListener('change', () => {
+            if (input.files && input.files[0]) showNewPreview(input.files[0]);
+        });
+
+        zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+        zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+        zone.addEventListener('drop', e => {
+            e.preventDefault();
+            zone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                input.files = dt.files;
+                showNewPreview(file);
+            }
+        });
+    }
+
+    function showNewPreview(file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            document.getElementById('previewImg').src = e.target.result;
+            document.getElementById('newPreview').style.display = 'block';
+            document.getElementById('uploadZone').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function removeNewImage() {
+        document.getElementById('imageInput').value = '';
+        document.getElementById('newPreview').style.display = 'none';
+        document.getElementById('uploadZone').style.display = 'block';
+    }
+
+    // ── HANDLE SUBMIT ──
+    // PUT /api/seller/cars/{id}
+    // Same multipart/form-data approach as add-car — because the image
+    // might be replaced. If no new image is selected, the backend
+    // should keep the existing imagePath unchanged.
+    async function handleSubmit() {
+        const btn = document.getElementById('submitBtn');
+
+        const brand    = document.getElementById('brand').value.trim();
+        const model    = document.getElementById('model').value.trim();
+        const year     = document.getElementById('year').value.trim();
+        const mileage  = document.getElementById('mileage').value.trim();
+        const price    = document.getElementById('price').value.trim();
+        const location = document.getElementById('location').value.trim();
+        const imageFile = document.getElementById('imageInput').files[0];
+
+        // Validation
+        if (!brand || !model || !year || !mileage || !price) {
+            showAlert('error', 'Please fill in all required fields.');
+            return;
+        }
+
+        if (isNaN(price) || Number(price) <= 0) {
+            showAlert('error', 'Please enter a valid price.');
+            return;
+        }
+
+        // Build FormData — same as add-car
+        const formData = new FormData();
+        formData.append('brand', brand);
+        formData.append('model', model);
+        formData.append('year', year);
+        formData.append('mileage', mileage);
+        formData.append('price', price);
+        formData.append('location', location);
+
+        // Only append new image if one was selected
+        // If not, the backend keeps the existing image
+        if (imageFile) {
+            formData.append('image', imageFile);
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Saving...';
+        hideAlerts();
+
+        try {
+            // PUT /api/seller/cars/{id}
+            // Maps to SellerController → CarService.updateCar()
+            // → Car.updateDetails() — this is where your OOP updateDetails() method is called
+            const res = await fetch(`/api/seller/cars/${carId}`, {
+                method: 'PUT',
+                credentials: 'include',
+                body: formData
+                // Again — no Content-Type header. Let the browser handle it.
+            });
+
+            if (res.ok) {
+                showAlert('success', 'Changes saved! Redirecting to your dashboard...');
+                btn.textContent = 'Saved ✓';
+                setTimeout(() => {
+                    window.location.href = '/seller-dashboard';
+                }, 1500);
+            } else {
+                let message = 'Failed to save changes. Please try again.';
+                try {
+                    const data = await res.json();
+                    if (data.message) message = data.message;
+                } catch (_) {}
+                showAlert('error', message);
+                btn.disabled = false;
+                btn.textContent = 'Save Changes →';
+            }
+
+        } catch (err) {
+            showAlert('error', 'Could not connect to server. Is the backend running?');
+            btn.disabled = false;
+            btn.textContent = 'Save Changes →';
+        }
+    }
+
+    // ── HELPERS ──
+    function showAlert(type, msg) {
+        hideAlerts();
+        const el = document.getElementById(type === 'error' ? 'errorMsg' : 'successMsg');
+        el.textContent = msg;
+        el.classList.add('show');
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function hideAlerts() {
+        document.getElementById('errorMsg').classList.remove('show');
+        document.getElementById('successMsg').classList.remove('show');
+    }
+</script>
+
+</body>
+</html>

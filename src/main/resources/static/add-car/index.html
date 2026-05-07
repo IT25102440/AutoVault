@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>AutoLane — Add Car</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --black: #0d0d0d;
+            --white: #f5f4f0;
+            --accent: #e8ff47;
+            --grey: #1a1a1a;
+            --muted: #888;
+            --card-bg: #161616;
+            --border: #2a2a2a;
+            --error: #ff4444;
+            --success: #47ff8a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            background: var(--black);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar-brand {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            color: var(--accent) !important;
+            letter-spacing: 2px;
+            text-decoration: none;
+        }
+        .navbar-brand span { color: var(--white); }
+        .nav-btn {
+            border: 1px solid var(--border);
+            color: var(--muted);
+            background: transparent;
+            padding: 0.4rem 1.2rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .nav-btn:hover { border-color: var(--white); color: var(--white); }
+
+        /* ── BACK LINK ── */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+            text-decoration: none;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 1.5rem 2rem 0;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--accent); }
+
+        /* ── PAGE LAYOUT ── */
+        .page-wrap {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem 4rem;
+        }
+
+        .page-eyebrow {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .page-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            letter-spacing: 1px;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        .page-sub {
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-bottom: 2.5rem;
+        }
+
+        /* ── FORM CARD ── */
+        .form-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 2rem;
+        }
+
+        /* ── SECTION DIVIDER ── */
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .form-section:last-of-type { border-bottom: none; margin-bottom: 0; }
+        .form-section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-bottom: 1.2rem;
+        }
+
+        /* ── FIELD GRID ── */
+        .field-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .field-grid.single { grid-template-columns: 1fr; }
+        @media (max-width: 600px) { .field-grid { grid-template-columns: 1fr; } }
+
+        /* ── FIELD ── */
+        .field-wrap { display: flex; flex-direction: column; }
+        .field-wrap label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+        .field-wrap input,
+        .field-wrap select {
+            background: var(--grey);
+            border: 1px solid var(--border);
+            color: var(--white);
+            padding: 0.85rem 1rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+        .field-wrap input:focus,
+        .field-wrap select:focus { border-color: var(--accent); }
+        .field-wrap input::placeholder { color: #555; }
+        .field-wrap select option { background: var(--grey); }
+
+        /* ── IMAGE UPLOAD ZONE ── */
+        .upload-zone {
+            border: 2px dashed var(--border);
+            background: var(--grey);
+            padding: 2.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            position: relative;
+        }
+        .upload-zone:hover,
+        .upload-zone.dragover {
+            border-color: var(--accent);
+            background: #1e1e1e;
+        }
+        .upload-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+        .upload-icon { font-size: 2.5rem; margin-bottom: 0.75rem; display: block; }
+        .upload-label {
+            font-size: 0.9rem;
+            color: var(--white);
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+        }
+        .upload-hint { font-size: 0.8rem; color: var(--muted); }
+        .upload-hint span { color: var(--accent); }
+
+        /* ── IMAGE PREVIEW ── */
+        .image-preview {
+            display: none;
+            margin-top: 1rem;
+            position: relative;
+        }
+        .image-preview img {
+            width: 100%;
+            max-height: 280px;
+            object-fit: cover;
+            display: block;
+        }
+        .image-preview .remove-img {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(0,0,0,0.8);
+            color: var(--error);
+            border: 1px solid var(--error);
+            padding: 0.3rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        /* ── ALERT ── */
+        .alert-msg {
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        .alert-msg.show { display: block; }
+        .alert-msg.error {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+        .alert-msg.success {
+            background: rgba(71, 255, 138, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        /* ── SUBMIT ── */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+        .submit-btn {
+            flex: 1;
+            background: var(--accent);
+            color: var(--black);
+            border: 1px solid var(--accent);
+            padding: 0.9rem;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .submit-btn:hover { background: transparent; color: var(--accent); }
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .cancel-btn {
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            padding: 0.9rem 1.5rem;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .cancel-btn:hover { border-color: var(--white); color: var(--white); }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar d-flex justify-content-between align-items-center">
+    <a href="/" class="navbar-brand">Auto<span>Lane</span></a>
+    <a href="/seller-dashboard" class="nav-btn">← Dashboard</a>
+</nav>
+
+<div class="page-wrap">
+    <div class="page-eyebrow">Seller</div>
+    <div class="page-title">Add New Car</div>
+    <div class="page-sub">Fill in the details below. Your listing will be visible to all buyers immediately.</div>
+
+    <!-- Alert messages -->
+    <div class="alert-msg error" id="errorMsg"></div>
+    <div class="alert-msg success" id="successMsg"></div>
+
+    <div class="form-card">
+
+        <!-- SECTION 1: Car Details -->
+        <div class="form-section">
+            <div class="form-section-title">Car Details</div>
+            <div class="field-grid">
+                <div class="field-wrap">
+                    <label for="brand">Brand *</label>
+                    <input type="text" id="brand" placeholder="e.g. Toyota" required />
+                </div>
+                <div class="field-wrap">
+                    <label for="model">Model *</label>
+                    <input type="text" id="model" placeholder="e.g. Corolla" required />
+                </div>
+                <div class="field-wrap">
+                    <label for="year">Year *</label>
+                    <input type="number" id="year" placeholder="e.g. 2019" min="1990" max="2025" required />
+                </div>
+                <div class="field-wrap">
+                    <label for="mileage">Mileage (km) *</label>
+                    <input type="number" id="mileage" placeholder="e.g. 45000" min="0" required />
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: Pricing & Location -->
+        <div class="form-section">
+            <div class="form-section-title">Pricing & Location</div>
+            <div class="field-grid">
+                <div class="field-wrap">
+                    <label for="price">Price (USD) *</label>
+                    <input type="number" id="price" placeholder="e.g. 12500" min="0" step="0.01" required />
+                </div>
+                <div class="field-wrap">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" placeholder="e.g. Colombo, Sri Lanka" />
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: Image Upload -->
+        <div class="form-section">
+            <div class="form-section-title">Car Photo</div>
+
+            <div class="upload-zone" id="uploadZone">
+                <!--
+                  This file input is what actually sends the image to the backend.
+                  The name "image" must match the @RequestParam("image") MultipartFile
+                  parameter in your SellerController.addCar() method.
+                -->
+                <input
+                        type="file"
+                        id="imageInput"
+                        name="image"
+                        accept="image/jpeg,image/png,image/webp"
+                />
+                <span class="upload-icon">📷</span>
+                <div class="upload-label">Click or drag & drop your photo here</div>
+                <div class="upload-hint">Supports <span>JPG, PNG, WEBP</span> · Max 5MB</div>
+            </div>
+
+            <!-- Preview shown after image is selected -->
+            <div class="image-preview" id="imagePreview">
+                <img id="previewImg" src="" alt="Preview" />
+                <button class="remove-img" onclick="removeImage()">✕ Remove</button>
+            </div>
+        </div>
+
+        <!-- FORM ACTIONS -->
+        <div class="form-actions">
+            <a href="/seller-dashboard" class="cancel-btn">Cancel</a>
+            <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">
+                Publish Listing →
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 AutoLane · SE1020 University Project</p>
+</footer>
+
+<script>
+    // ── AUTH GUARD ──
+    // Check session before anything else.
+    // If not logged in, redirect to login.
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const res = await fetch('/api/auth/me', { credentials: 'include' });
+            if (!res.ok) {
+                window.location.href = '/login';
+                return;
+            }
+            const user = await res.json();
+            if (user.role !== 'SELLER') {
+                window.location.href = '/login';
+            }
+        } catch (err) {
+            window.location.href = '/login';
+        }
+
+        // Set up drag-and-drop events on the upload zone
+        setupUploadZone();
+    });
+
+    // ── IMAGE UPLOAD ZONE ──
+    // Wire up drag-and-drop behaviour and the file input change event.
+    function setupUploadZone() {
+        const zone = document.getElementById('uploadZone');
+        const input = document.getElementById('imageInput');
+
+        // Show preview when file is selected via the file picker
+        input.addEventListener('change', () => {
+            if (input.files && input.files[0]) {
+                showPreview(input.files[0]);
+            }
+        });
+
+        // Drag-and-drop visual feedback
+        zone.addEventListener('dragover', e => {
+            e.preventDefault();
+            zone.classList.add('dragover');
+        });
+        zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+        zone.addEventListener('drop', e => {
+            e.preventDefault();
+            zone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                // Assign dropped file to the input so it's included in FormData
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                input.files = dt.files;
+                showPreview(file);
+            }
+        });
+    }
+
+    // ── IMAGE PREVIEW ──
+    function showPreview(file) {
+        const preview = document.getElementById('imagePreview');
+        const img = document.getElementById('previewImg');
+        const reader = new FileReader();
+        reader.onload = e => {
+            img.src = e.target.result;
+            preview.style.display = 'block';
+            document.getElementById('uploadZone').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function removeImage() {
+        document.getElementById('imageInput').value = '';
+        document.getElementById('imagePreview').style.display = 'none';
+        document.getElementById('uploadZone').style.display = 'block';
+        document.getElementById('previewImg').src = '';
+    }
+
+    // ── HANDLE SUBMIT ──
+    // This is the most important function on this page.
+    // We use FormData — NOT JSON — because we're sending a file.
+    // FormData automatically sets the Content-Type to multipart/form-data,
+    // which is what your SellerController expects for the image upload.
+    async function handleSubmit() {
+        const btn = document.getElementById('submitBtn');
+
+        // Read values from form fields
+        const brand = document.getElementById('brand').value.trim();
+        const model = document.getElementById('model').value.trim();
+        const year = document.getElementById('year').value.trim();
+        const mileage = document.getElementById('mileage').value.trim();
+        const price = document.getElementById('price').value.trim();
+        const location = document.getElementById('location').value.trim();
+        const imageFile = document.getElementById('imageInput').files[0];
+
+        // ── CLIENT-SIDE VALIDATION ──
+        if (!brand || !model || !year || !mileage || !price) {
+            showAlert('error', 'Please fill in all required fields (marked with *).');
+            return;
+        }
+
+        if (isNaN(price) || Number(price) <= 0) {
+            showAlert('error', 'Please enter a valid price.');
+            return;
+        }
+
+        if (isNaN(year) || Number(year) < 1990 || Number(year) > 2025) {
+            showAlert('error', 'Please enter a valid year between 1990 and 2025.');
+            return;
+        }
+
+        // ── BUILD FORM DATA ──
+        // FormData bundles text fields AND the file together in one request.
+        // The field names here ("brand", "model", etc.) must match the
+        // @RequestParam names in your SellerController, OR the fields in your CarDTO.
+        const formData = new FormData();
+        formData.append('brand', brand);
+        formData.append('model', model);
+        formData.append('year', year);
+        formData.append('mileage', mileage);
+        formData.append('price', price);
+        formData.append('location', location);
+
+        // Only append the image if one was selected — it's optional
+        if (imageFile) {
+            formData.append('image', imageFile);
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Publishing...';
+        hideAlerts();
+
+        try {
+            // POST /api/seller/cars
+            // DO NOT set Content-Type header manually — the browser sets it
+            // automatically with the correct multipart boundary when using FormData.
+            // If you set it manually, the request will break.
+            const res = await fetch('/api/seller/cars', {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
+                // ← No 'Content-Type' header here — this is intentional!
+            });
+
+            if (res.ok) {
+                showAlert('success', 'Listing published! Redirecting to your dashboard...');
+                btn.textContent = 'Published ✓';
+                setTimeout(() => {
+                    window.location.href = '/seller-dashboard';
+                }, 1500);
+            } else {
+                let message = 'Failed to publish listing. Please try again.';
+                try {
+                    const data = await res.json();
+                    if (data.message) message = data.message;
+                } catch (_) {}
+                showAlert('error', message);
+                btn.disabled = false;
+                btn.textContent = 'Publish Listing →';
+            }
+
+        } catch (err) {
+            showAlert('error', 'Could not connect to server. Is the backend running?');
+            btn.disabled = false;
+            btn.textContent = 'Publish Listing →';
+        }
+    }
+
+    // ── HELPERS ──
+    function showAlert(type, msg) {
+        hideAlerts();
+        const el = document.getElementById(type === 'error' ? 'errorMsg' : 'successMsg');
+        el.textContent = msg;
+        el.classList.add('show');
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function hideAlerts() {
+        document.getElementById('errorMsg').classList.remove('show');
+        document.getElementById('successMsg').classList.remove('show');
+    }
+</script>
+
+</body>
+</html>

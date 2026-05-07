@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>AutoLane — Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --black: #0d0d0d;
+            --white: #f5f4f0;
+            --accent: #e8ff47;
+            --grey: #1a1a1a;
+            --muted: #888;
+            --card-bg: #161616;
+            --border: #2a2a2a;
+            --error: #ff4444;
+            --success: #47ff8a;
+            --admin: #ff9f47;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            background: var(--black);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar-brand {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            color: var(--accent) !important;
+            letter-spacing: 2px;
+            text-decoration: none;
+        }
+        .navbar-brand span { color: var(--white); }
+        .admin-badge {
+            background: var(--admin);
+            color: var(--black);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 0.2rem 0.6rem;
+            margin-left: 0.75rem;
+            vertical-align: middle;
+        }
+        .nav-btn {
+            border: 1px solid var(--border);
+            color: var(--muted);
+            background: transparent;
+            padding: 0.4rem 1.2rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .nav-btn:hover { border-color: var(--error); color: var(--error); }
+
+        /* ── PAGE HEADER ── */
+        .page-header {
+            padding: 2.5rem 2rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .page-header .eyebrow {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--admin);
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        .page-header h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+        .page-header .welcome {
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+        }
+
+        /* ── STATS ROW ── */
+        .stats-row {
+            display: flex;
+            gap: 1px;
+            background: var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .stat-box {
+            flex: 1;
+            background: var(--black);
+            padding: 1.2rem 2rem;
+        }
+        .stat-box .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-bottom: 0.3rem;
+        }
+        .stat-box .stat-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+        .stat-box .stat-value.orange { color: var(--admin); }
+
+        /* ── TABS ── */
+        .tab-bar {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            padding: 1rem 1.5rem 1rem 0;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .tab-btn.active {
+            color: var(--white);
+            border-bottom-color: var(--accent);
+        }
+        .tab-btn:hover:not(.active) { color: var(--white); }
+
+        /* ── TAB CONTENT ── */
+        .tab-panel { display: none; padding: 2rem; }
+        .tab-panel.active { display: block; }
+
+        /* ── SECTION LABEL ── */
+        .section-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-bottom: 1rem;
+        }
+
+        /* ── CAR ROW ── */
+        .car-row {
+            display: grid;
+            grid-template-columns: 70px 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 0.85rem 1rem;
+            margin-bottom: 1px;
+            transition: background 0.2s;
+        }
+        .car-row:hover { background: #1a1a1a; }
+
+        .car-thumb {
+            width: 70px;
+            height: 48px;
+            object-fit: cover;
+            display: block;
+            background: var(--grey);
+        }
+        .car-thumb-placeholder {
+            width: 70px;
+            height: 48px;
+            background: var(--grey);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--border);
+        }
+
+        .car-info .car-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 0.5px;
+            line-height: 1.1;
+        }
+        .car-info .car-meta {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 0.15rem;
+        }
+        .car-info .car-seller {
+            font-size: 0.78rem;
+            color: var(--admin);
+            margin-top: 0.1rem;
+        }
+
+        /* ── SELLER ROW ── */
+        .seller-row {
+            display: grid;
+            grid-template-columns: 44px 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 1rem;
+            margin-bottom: 1px;
+            transition: background 0.2s;
+        }
+        .seller-row:hover { background: #1a1a1a; }
+
+        .seller-avatar {
+            width: 44px;
+            height: 44px;
+            background: var(--grey);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+        .seller-info .seller-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .seller-info .seller-email {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 0.1rem;
+        }
+        .seller-info .seller-count {
+            font-size: 0.75rem;
+            color: var(--admin);
+            margin-top: 0.1rem;
+        }
+
+        /* ── DELETE BUTTON ── */
+        .del-btn {
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--muted);
+            padding: 0.35rem 0.8rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .del-btn:hover { border-color: var(--error); color: var(--error); }
+
+        /* ── STATES ── */
+        .state-wrap {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--muted);
+        }
+        .state-wrap .state-icon { font-size: 2.5rem; display: block; margin-bottom: 0.75rem; }
+
+        /* ── CONFIRM MODAL ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            max-width: 380px;
+            width: 90%;
+        }
+        .modal-box h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .modal-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .modal-actions { display: flex; gap: 0.75rem; }
+        .modal-btn {
+            flex: 1;
+            padding: 0.75rem;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+        }
+        .modal-btn.cancel { background: transparent; color: var(--white); }
+        .modal-btn.cancel:hover { border-color: var(--white); }
+        .modal-btn.confirm { background: var(--error); color: white; border-color: var(--error); }
+        .modal-btn.confirm:hover { background: transparent; color: var(--error); }
+
+        /* ── TOAST ── */
+        .toast-bar {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 99999;
+            transition: transform 0.3s ease;
+            pointer-events: none;
+        }
+        .toast-bar.show { transform: translateX(-50%) translateY(0); }
+        .toast-bar.error { background: var(--error); }
+        .toast-bar.success { background: #1a1a1a; border: 1px solid var(--success); color: var(--success); }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar d-flex justify-content-between align-items-center">
+    <div>
+        <a href="/" class="navbar-brand">Auto<span>Lane</span></a>
+        <span class="admin-badge">Admin</span>
+    </div>
+    <button class="nav-btn" onclick="handleLogout()">Log Out</button>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="eyebrow">Admin Panel</div>
+    <h1>Control Centre</h1>
+    <div class="welcome" id="welcomeMsg">Loading...</div>
+</div>
+
+<!-- STATS -->
+<div class="stats-row">
+    <div class="stat-box">
+        <div class="stat-label">Total Cars</div>
+        <div class="stat-value" id="statCars">—</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-label">Total Sellers</div>
+        <div class="stat-value orange" id="statSellers">—</div>
+    </div>
+</div>
+
+<!-- TABS -->
+<div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('cars', this)">
+        All Cars
+    </button>
+    <button class="tab-btn" onclick="switchTab('sellers', this)">
+        All Sellers
+    </button>
+</div>
+
+<!-- TAB: CARS -->
+<div class="tab-panel active" id="tab-cars">
+    <div class="section-label">All Listings</div>
+    <div id="carsLoading" class="state-wrap">
+        <span class="state-icon">⏳</span>
+        <p>Loading listings...</p>
+    </div>
+    <div id="carsEmpty" class="state-wrap" style="display:none;">
+        <span class="state-icon">🚗</span>
+        <p>No car listings found.</p>
+    </div>
+    <div id="carsList"></div>
+</div>
+
+<!-- TAB: SELLERS -->
+<div class="tab-panel" id="tab-sellers">
+    <div class="section-label">Registered Sellers</div>
+    <div id="sellersLoading" class="state-wrap">
+        <span class="state-icon">⏳</span>
+        <p>Loading sellers...</p>
+    </div>
+    <div id="sellersEmpty" class="state-wrap" style="display:none;">
+        <span class="state-icon">👤</span>
+        <p>No sellers registered yet.</p>
+    </div>
+    <div id="sellersList"></div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-box">
+        <h3 id="modalTitle">Confirm Delete</h3>
+        <p id="modalMessage">This action cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
+            <button class="modal-btn confirm" id="confirmDeleteBtn">Delete</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-bar" id="toastBar"></div>
+
+<footer>
+    <p>© 2025 AutoLane · SE1020 University Project</p>
+</footer>
+
+<script>
+    // ── ENTRY POINT ──
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Auth guard — must be ADMIN
+        try {
+            const res = await fetch('/api/auth/me', { credentials: 'include' });
+            if (!res.ok) { window.location.href = '/login'; return; }
+
+            const user = await res.json();
+
+            if (user.role !== 'ADMIN') {
+                // Logged in but not admin — send to seller dashboard
+                window.location.href = '/seller-dashboard';
+                return;
+            }
+
+            document.getElementById('welcomeMsg').textContent =
+                `Logged in as ${user.name} · ${user.email}`;
+
+        } catch (err) {
+            window.location.href = '/login';
+            return;
+        }
+
+        // Load both datasets in parallel for speed
+        // Promise.all runs both fetches at the same time instead of one after the other
+        await Promise.all([loadCars(), loadSellers()]);
+    });
+
+    // ── LOAD ALL CARS ──
+    // GET /api/admin/cars → AdminController → CarService.getAllCars()
+    async function loadCars() {
+        try {
+            const res = await fetch('/api/admin/cars', { credentials: 'include' });
+            if (!res.ok) throw new Error();
+
+            const cars = await res.json();
+            document.getElementById('carsLoading').style.display = 'none';
+            document.getElementById('statCars').textContent = cars.length;
+
+            if (cars.length === 0) {
+                document.getElementById('carsEmpty').style.display = 'block';
+                return;
+            }
+
+            renderCars(cars);
+
+        } catch (err) {
+            document.getElementById('carsLoading').style.display = 'none';
+            showToast('Could not load car listings.', 'error');
+        }
+    }
+
+    // ── RENDER CARS ──
+    function renderCars(cars) {
+        const list = document.getElementById('carsList');
+        list.innerHTML = '';
+
+        cars.forEach(car => {
+            const row = document.createElement('div');
+            row.className = 'car-row';
+            row.id = `car-${car.id}`;
+
+            const thumbHtml = car.imagePath
+                ? `<img class="car-thumb" src="/uploads/${car.imagePath}" alt="${car.brand}"
+               onerror="this.outerHTML='<div class=\\'car-thumb-placeholder\\'>🚗</div>'">`
+                : `<div class="car-thumb-placeholder">🚗</div>`;
+
+            // Show the seller's name underneath the car info
+            // This demonstrates the @ManyToOne relationship returning nested seller data
+            const sellerName = car.seller?.name || car.sellerName || 'Unknown seller';
+
+            row.innerHTML = `
+          ${thumbHtml}
+          <div class="car-info">
+            <div class="car-name">${car.brand} ${car.model}</div>
+            <div class="car-meta">${car.year} · ${Number(car.mileage).toLocaleString()} km · $${Number(car.price).toLocaleString()}</div>
+            <div class="car-seller">Seller: ${sellerName}</div>
+          </div>
+          <button class="del-btn" onclick="askDelete('car', ${car.id}, '${car.brand} ${car.model}')">
+            Delete
+          </button>
+        `;
+
+            list.appendChild(row);
+        });
+    }
+
+    // ── LOAD ALL SELLERS ──
+    // GET /api/admin/sellers → AdminController → UserService.getAllSellers()
+    async function loadSellers() {
+        try {
+            const res = await fetch('/api/admin/sellers', { credentials: 'include' });
+            if (!res.ok) throw new Error();
+
+            const sellers = await res.json();
+            document.getElementById('sellersLoading').style.display = 'none';
+            document.getElementById('statSellers').textContent = sellers.length;
+
+            if (sellers.length === 0) {
+                document.getElementById('sellersEmpty').style.display = 'block';
+                return;
+            }
+
+            renderSellers(sellers);
+
+        } catch (err) {
+            document.getElementById('sellersLoading').style.display = 'none';
+            showToast('Could not load sellers.', 'error');
+        }
+    }
+
+    // ── RENDER SELLERS ──
+    function renderSellers(sellers) {
+        const list = document.getElementById('sellersList');
+        list.innerHTML = '';
+
+        sellers.forEach(seller => {
+            const row = document.createElement('div');
+            row.className = 'seller-row';
+            row.id = `seller-${seller.id}`;
+
+            // Generate initials for the avatar from the seller's name
+            const initials = seller.name
+                ? seller.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+                : '??';
+
+            // Show how many cars this seller has listed
+            const carCount = seller.cars ? seller.cars.length : 0;
+
+            row.innerHTML = `
+          <div class="seller-avatar">${initials}</div>
+          <div class="seller-info">
+            <div class="seller-name">${seller.name}</div>
+            <div class="seller-email">${seller.email}</div>
+            <div class="seller-count">${carCount} listing${carCount !== 1 ? 's' : ''}</div>
+          </div>
+          <button class="del-btn" onclick="askDelete('seller', ${seller.id}, '${seller.name}')">
+            Remove
+          </button>
+        `;
+
+            list.appendChild(row);
+        });
+    }
+
+    // ── TAB SWITCHING ──
+    function switchTab(name, btn) {
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`tab-${name}`).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    // ── DELETE FLOW ──
+    // One unified delete function for both cars and sellers.
+    // 'type' is either 'car' or 'seller' — determines which endpoint to call.
+    let pendingDelete = null;
+
+    function askDelete(type, id, label) {
+        pendingDelete = { type, id, label };
+
+        document.getElementById('modalTitle').textContent =
+            type === 'car' ? 'Delete Listing?' : 'Remove Seller?';
+
+        document.getElementById('modalMessage').textContent =
+            type === 'car'
+                ? `Permanently delete "${label}"? This cannot be undone.`
+                : `Remove seller "${label}" and all their listings? This cannot be undone.`;
+
+        document.getElementById('confirmDeleteBtn').onclick = confirmDelete;
+        document.getElementById('deleteModal').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('deleteModal').classList.remove('show');
+        pendingDelete = null;
+    }
+
+    // ── CONFIRM DELETE ──
+    async function confirmDelete() {
+        if (!pendingDelete) return;
+        const { type, id, label } = pendingDelete;
+        closeModal();
+
+        // Choose the correct endpoint based on type
+        // Car:    DELETE /api/admin/cars/{id}    → AdminController → CarService.deleteCar()
+        // Seller: DELETE /api/admin/sellers/{id} → AdminController → UserService.deleteSeller()
+        const url = type === 'car'
+            ? `/api/admin/cars/${id}`
+            : `/api/admin/sellers/${id}`;
+
+        try {
+            const res = await fetch(url, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+
+            if (res.ok) {
+                // Remove the row from the DOM
+                const rowId = type === 'car' ? `car-${id}` : `seller-${id}`;
+                const row = document.getElementById(rowId);
+                if (row) row.remove();
+
+                // Update the stat counter
+                const statEl = type === 'car'
+                    ? document.getElementById('statCars')
+                    : document.getElementById('statSellers');
+                statEl.textContent = Math.max(0, parseInt(statEl.textContent) - 1);
+
+                showToast(
+                    type === 'car' ? 'Listing deleted.' : 'Seller removed.',
+                    'success'
+                );
+
+            } else {
+                showToast(`Could not delete ${type}. Try again.`, 'error');
+            }
+
+        } catch (err) {
+            showToast('Server error. Please try again.', 'error');
+        }
+    }
+
+    // ── LOGOUT ──
+    async function handleLogout() {
+        try {
+            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+        } catch (_) {}
+        window.location.href = '/login';
+    }
+
+    // ── TOAST ──
+    function showToast(msg, type = 'error') {
+        const toast = document.getElementById('toastBar');
+        toast.textContent = msg;
+        toast.className = `toast-bar ${type} show`;
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+</script>
+
+</body>
+</html>

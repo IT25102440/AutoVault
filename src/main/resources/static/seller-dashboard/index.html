@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>AutoLane — Seller Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --black: #0d0d0d;
+            --white: #f5f4f0;
+            --accent: #e8ff47;
+            --grey: #1a1a1a;
+            --muted: #888;
+            --card-bg: #161616;
+            --border: #2a2a2a;
+            --error: #ff4444;
+            --success: #47ff8a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            background: var(--black);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar-brand {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            color: var(--accent) !important;
+            letter-spacing: 2px;
+            text-decoration: none;
+        }
+        .navbar-brand span { color: var(--white); }
+        .nav-btn {
+            border: 1px solid var(--border);
+            color: var(--muted);
+            background: transparent;
+            padding: 0.4rem 1.2rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .nav-btn:hover { border-color: var(--error); color: var(--error); }
+
+        /* ── PAGE HEADER ── */
+        .page-header {
+            padding: 2.5rem 2rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .page-header-left .eyebrow {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        .page-header-left h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+        .page-header-left .welcome {
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+        }
+        .add-btn {
+            background: var(--accent);
+            color: var(--black);
+            border: 1px solid var(--accent);
+            padding: 0.7rem 1.5rem;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .add-btn:hover { background: transparent; color: var(--accent); }
+
+        /* ── STATS ROW ── */
+        .stats-row {
+            display: flex;
+            gap: 1px;
+            background: var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .stat-box {
+            flex: 1;
+            background: var(--black);
+            padding: 1.2rem 2rem;
+        }
+        .stat-box .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-bottom: 0.3rem;
+        }
+        .stat-box .stat-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+
+        /* ── LISTINGS TABLE ── */
+        .listings-wrap {
+            padding: 2rem;
+        }
+        .listings-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-bottom: 1rem;
+        }
+
+        .car-row {
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 1rem;
+            margin-bottom: 1px;
+            transition: background 0.2s;
+        }
+        .car-row:hover { background: #1a1a1a; }
+
+        .car-row-thumb {
+            width: 80px;
+            height: 55px;
+            object-fit: cover;
+            display: block;
+            background: var(--grey);
+        }
+        .car-row-thumb-placeholder {
+            width: 80px;
+            height: 55px;
+            background: var(--grey);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--border);
+        }
+
+        .car-row-info .car-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.3rem;
+            letter-spacing: 0.5px;
+            line-height: 1.1;
+        }
+        .car-row-info .car-meta {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 0.2rem;
+        }
+        .car-row-info .car-price {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-top: 0.2rem;
+        }
+
+        .car-row-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        .action-btn {
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--white);
+            padding: 0.4rem 0.9rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .action-btn.edit:hover { border-color: var(--accent); color: var(--accent); }
+        .action-btn.delete { border-color: transparent; color: var(--muted); }
+        .action-btn.delete:hover { border-color: var(--error); color: var(--error); }
+
+        /* ── STATES ── */
+        .state-wrap {
+            text-align: center;
+            padding: 5rem 2rem;
+            color: var(--muted);
+        }
+        .state-wrap .state-icon { font-size: 3rem; display: block; margin-bottom: 1rem; }
+        .state-wrap .state-action {
+            display: inline-block;
+            margin-top: 1.5rem;
+            background: var(--accent);
+            color: var(--black);
+            padding: 0.7rem 1.5rem;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .state-wrap .state-action:hover { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+
+        /* ── CONFIRM MODAL ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            display: none;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            max-width: 380px;
+            width: 90%;
+        }
+        .modal-box h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .modal-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .modal-actions { display: flex; gap: 0.75rem; }
+        .modal-btn {
+            flex: 1;
+            padding: 0.75rem;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+        }
+        .modal-btn.cancel { background: transparent; color: var(--white); }
+        .modal-btn.cancel:hover { border-color: var(--white); }
+        .modal-btn.confirm { background: var(--error); color: white; border-color: var(--error); }
+        .modal-btn.confirm:hover { background: transparent; color: var(--error); }
+
+        /* ── TOAST ── */
+        .toast-bar {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 99999;
+            transition: transform 0.3s ease;
+            pointer-events: none;
+        }
+        .toast-bar.show { transform: translateX(-50%) translateY(0); }
+        .toast-bar.error { background: var(--error); }
+        .toast-bar.success { background: #1a1a1a; border: 1px solid var(--success); color: var(--success); }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar d-flex justify-content-between align-items-center">
+    <a href="/" class="navbar-brand">Auto<span>Lane</span></a>
+    <button class="nav-btn" onclick="handleLogout()">Log Out</button>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="page-header-left">
+        <div class="eyebrow">Seller Dashboard</div>
+        <h1>My Listings</h1>
+        <div class="welcome" id="welcomeMsg">Loading...</div>
+    </div>
+    <a href="/add-car" class="add-btn">+ Add New Car</a>
+</div>
+
+<!-- STATS ROW -->
+<div class="stats-row">
+    <div class="stat-box">
+        <div class="stat-label">Total Listings</div>
+        <div class="stat-value" id="statTotal">—</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-label">Highest Price</div>
+        <div class="stat-value" id="statHighest">—</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-label">Lowest Price</div>
+        <div class="stat-value" id="statLowest">—</div>
+    </div>
+</div>
+
+<!-- LISTINGS -->
+<div class="listings-wrap">
+    <div class="listings-label">Your Cars</div>
+    <div id="loadingState" class="state-wrap">
+        <span class="state-icon">⏳</span>
+        <p>Loading your listings...</p>
+    </div>
+    <div id="emptyState" class="state-wrap" style="display:none;">
+        <span class="state-icon">🚗</span>
+        <p>You haven't listed any cars yet.</p>
+        <a href="/add-car" class="state-action">+ Add Your First Car</a>
+    </div>
+    <div id="carList"></div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-box">
+        <h3>Delete Listing?</h3>
+        <p>This will permanently remove the car from AutoLane. This action cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
+            <button class="modal-btn confirm" id="confirmDeleteBtn">Delete</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-bar" id="toastBar"></div>
+
+<footer>
+    <p>© 2025 AutoLane · SE1020 University Project</p>
+</footer>
+
+<script>
+    // ── ENTRY POINT ──
+    // First thing: verify the session is active.
+    // If not logged in, redirect to login page immediately.
+    // This is the frontend equivalent of your @PreAuthorize on the backend.
+    document.addEventListener('DOMContentLoaded', async () => {
+        await checkAuthAndLoad();
+    });
+
+    async function checkAuthAndLoad() {
+        try {
+            // GET /api/auth/me — returns current logged-in user, or 401 if not logged in
+            const res = await fetch('/api/auth/me', { credentials: 'include' });
+
+            if (!res.ok) {
+                // Not logged in — send to login page
+                window.location.href = '/login';
+                return;
+            }
+
+            const user = await res.json();
+
+            // Extra safety — make sure this is actually a SELLER, not an ADMIN
+            // who somehow ended up on the wrong page
+            if (user.role !== 'SELLER') {
+                window.location.href = '/admin-dashboard';
+                return;
+            }
+
+            // Show welcome message with seller's name
+            document.getElementById('welcomeMsg').textContent =
+                `Logged in as ${user.name} · ${user.email}`;
+
+            // Now load the seller's cars
+            loadCars();
+
+        } catch (err) {
+            window.location.href = '/login';
+        }
+    }
+
+    // ── LOAD SELLER'S CARS ──
+    // GET /api/seller/cars — Spring Security ensures only the logged-in
+    // seller's cars come back. The backend reads the session to know who's asking.
+    async function loadCars() {
+        try {
+            const res = await fetch('/api/seller/cars', { credentials: 'include' });
+
+            if (!res.ok) throw new Error('Failed to load cars');
+
+            const cars = await res.json();
+
+            document.getElementById('loadingState').style.display = 'none';
+
+            if (cars.length === 0) {
+                document.getElementById('emptyState').style.display = 'block';
+                updateStats([]);
+                return;
+            }
+
+            updateStats(cars);
+            renderCarList(cars);
+
+        } catch (err) {
+            document.getElementById('loadingState').style.display = 'none';
+            showToast('Could not load your listings.', 'error');
+        }
+    }
+
+    // ── RENDER CAR LIST ──
+    function renderCarList(cars) {
+        const list = document.getElementById('carList');
+        list.innerHTML = '';
+
+        cars.forEach(car => {
+            const row = document.createElement('div');
+            row.className = 'car-row';
+            row.id = `car-row-${car.id}`;
+
+            const thumbHtml = car.imagePath
+                ? `<img class="car-row-thumb" src="/uploads/${car.imagePath}" alt="${car.brand} ${car.model}"
+               onerror="this.outerHTML='<div class=\\'car-row-thumb-placeholder\\'>🚗</div>'">`
+                : `<div class="car-row-thumb-placeholder">🚗</div>`;
+
+            row.innerHTML = `
+          ${thumbHtml}
+          <div class="car-row-info">
+            <div class="car-name">${car.brand} ${car.model}</div>
+            <div class="car-meta">${car.year} · ${Number(car.mileage).toLocaleString()} km · ${car.location || 'No location'}</div>
+            <div class="car-price">$${Number(car.price).toLocaleString()}</div>
+          </div>
+          <div class="car-row-actions">
+            <a href="/edit-car?id=${car.id}" class="action-btn edit">Edit</a>
+            <button class="action-btn delete" onclick="askDelete(${car.id}, '${car.brand} ${car.model}')">Delete</button>
+          </div>
+        `;
+
+            list.appendChild(row);
+        });
+    }
+
+    // ── STATS ──
+    // Calculate simple stats from the loaded cars array
+    function updateStats(cars) {
+        document.getElementById('statTotal').textContent = cars.length;
+
+        if (cars.length === 0) {
+            document.getElementById('statHighest').textContent = '—';
+            document.getElementById('statLowest').textContent = '—';
+            return;
+        }
+
+        const prices = cars.map(c => Number(c.price));
+        const highest = Math.max(...prices);
+        const lowest = Math.min(...prices);
+
+        document.getElementById('statHighest').textContent = `$${highest.toLocaleString()}`;
+        document.getElementById('statLowest').textContent = `$${lowest.toLocaleString()}`;
+    }
+
+    // ── DELETE FLOW ──
+    // We use a confirmation modal instead of window.confirm()
+    // to keep the design consistent and give the user a clear warning.
+    let pendingDeleteId = null;
+
+    function askDelete(id, name) {
+        pendingDeleteId = id;
+        document.querySelector('#deleteModal p').textContent =
+            `This will permanently remove "${name}" from AutoLane. This cannot be undone.`;
+        document.getElementById('deleteModal').classList.add('show');
+
+        // Wire up the confirm button to actually delete
+        document.getElementById('confirmDeleteBtn').onclick = () => confirmDelete(id);
+    }
+
+    function closeModal() {
+        document.getElementById('deleteModal').classList.remove('show');
+        pendingDeleteId = null;
+    }
+
+    // ── CONFIRM DELETE ──
+    // DELETE /api/seller/cars/{id}
+    // Maps to SellerController → CarService.deleteCar()
+    async function confirmDelete(id) {
+        closeModal();
+
+        try {
+            const res = await fetch(`/api/seller/cars/${id}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+
+            if (res.ok) {
+                // Remove the row from the DOM without reloading the whole page
+                const row = document.getElementById(`car-row-${id}`);
+                if (row) row.remove();
+
+                // Recount and update stats
+                const remaining = document.querySelectorAll('.car-row');
+                document.getElementById('statTotal').textContent = remaining.length;
+
+                if (remaining.length === 0) {
+                    document.getElementById('emptyState').style.display = 'block';
+                    updateStats([]);
+                }
+
+                showToast('Listing deleted successfully.', 'success');
+            } else {
+                showToast('Could not delete listing. Try again.', 'error');
+            }
+
+        } catch (err) {
+            showToast('Server error. Please try again.', 'error');
+        }
+    }
+
+    // ── LOGOUT ──
+    // POST /api/auth/logout — defined in your SecurityConfig
+    // On success, Spring Security clears the session and returns 200
+    async function handleLogout() {
+        try {
+            await fetch('/api/auth/logout', {
+                method: 'POST',
+                credentials: 'include'
+            });
+        } catch (_) {
+            // Even if the request fails, clear the local state and redirect
+        }
+        window.location.href = '/login';
+    }
+
+    // ── TOAST ──
+    function showToast(msg, type = 'error') {
+        const toast = document.getElementById('toastBar');
+        toast.textContent = msg;
+        toast.className = `toast-bar ${type} show`;
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+</script>
+
+</body>
+</html>

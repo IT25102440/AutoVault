@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>AutoLane — Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --black: #0d0d0d;
+            --white: #f5f4f0;
+            --accent: #e8ff47;
+            --grey: #1a1a1a;
+            --muted: #888;
+            --border: #2a2a2a;
+            --error: #ff4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            background: var(--black);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+        }
+        .navbar-brand {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            color: var(--accent) !important;
+            letter-spacing: 2px;
+            text-decoration: none;
+        }
+        .navbar-brand span { color: var(--white); }
+
+        /* ── PAGE LAYOUT ── */
+        .page-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1rem;
+        }
+
+        /* ── CARD ── */
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: #161616;
+            border: 1px solid var(--border);
+            padding: 2.5rem;
+        }
+
+        .card-eyebrow {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .card-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.8rem;
+            letter-spacing: 1px;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        .card-sub {
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-bottom: 2rem;
+        }
+
+        /* ── FORM FIELDS ── */
+        .field-wrap { margin-bottom: 1.2rem; }
+        .field-wrap label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+        .field-wrap input {
+            width: 100%;
+            background: var(--grey);
+            border: 1px solid var(--border);
+            color: var(--white);
+            padding: 0.85rem 1rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .field-wrap input:focus { border-color: var(--accent); }
+        .field-wrap input::placeholder { color: #555; }
+
+        /* ── ERROR MESSAGE ── */
+        .error-msg {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            margin-bottom: 1.2rem;
+            display: none;
+        }
+        .error-msg.show { display: block; }
+
+        /* ── SUBMIT BUTTON ── */
+        .submit-btn {
+            width: 100%;
+            background: var(--accent);
+            color: var(--black);
+            border: 1px solid var(--accent);
+            padding: 0.9rem;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+        }
+        .submit-btn:hover { background: transparent; color: var(--accent); }
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ── FOOTER LINK ── */
+        .card-footer-link {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--muted);
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+        .card-footer-link a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .card-footer-link a:hover { text-decoration: underline; }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar d-flex justify-content-between align-items-center">
+    <a href="/" class="navbar-brand">Auto<span>Lane</span></a>
+</nav>
+
+<!-- CENTERED CARD -->
+<div class="page-center">
+    <div class="login-card">
+
+        <div class="card-eyebrow">Seller & Admin</div>
+        <div class="card-title">Welcome Back</div>
+        <div class="card-sub">Log in to manage your listings.</div>
+
+        <!-- Error message — shown if login fails -->
+        <div class="error-msg" id="errorMsg">
+            Invalid email or password. Please try again.
+        </div>
+
+        <!--
+          IMPORTANT: The form action must match .loginProcessingUrl() in SecurityConfig.
+          That is: POST /api/auth/login
+
+          Spring Security ALWAYS looks for fields named "username" and "password".
+          Even though users type their email, the field name must be "username".
+          This is a Spring Security requirement — do not change the name attributes.
+        -->
+        <div class="field-wrap">
+            <label for="username">Email Address</label>
+            <input
+                    type="email"
+                    id="username"
+                    name="username"
+                    placeholder="you@example.com"
+                    autocomplete="email"
+                    required
+            />
+        </div>
+
+        <div class="field-wrap">
+            <label for="password">Password</label>
+            <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="••••••••"
+                    autocomplete="current-password"
+                    required
+            />
+        </div>
+
+        <button class="submit-btn" id="loginBtn" onclick="handleLogin()">
+            Log In →
+        </button>
+
+        <div class="card-footer-link">
+            Don't have an account? <a href="/register">Register as a Seller</a>
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 AutoLane · SE1020 University Project</p>
+</footer>
+
+<script>
+    // ── CHECK IF ALREADY LOGGED IN ──
+    // When the login page loads, check if there's already an active session.
+    // If so, redirect the user straight to their dashboard — no need to log in again.
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const res = await fetch('/api/auth/me', { credentials: 'include' });
+            if (res.ok) {
+                const user = await res.json();
+                redirectByRole(user.role);
+            }
+        } catch (err) {
+            // No active session — stay on login page, nothing to do
+        }
+    });
+
+    // ── HANDLE LOGIN ──
+    // We use fetch() instead of a normal HTML form submit.
+    // Why? Because a normal form submission would follow the Spring Security
+    // redirect to /api/auth/me and the browser would just display raw JSON.
+    // Using fetch() lets us intercept the response and handle the redirect ourselves.
+    async function handleLogin() {
+        const btn = document.getElementById('loginBtn');
+        const errorMsg = document.getElementById('errorMsg');
+        const email = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+
+        // Basic client-side validation
+        if (!email || !password) {
+            showError('Please enter your email and password.');
+            return;
+        }
+
+        // Disable button while request is in flight
+        btn.disabled = true;
+        btn.textContent = 'Logging in...';
+        errorMsg.classList.remove('show');
+
+        try {
+            // Spring Security form login expects the body as URL-encoded form data,
+            // NOT JSON. This is because it's a traditional form login endpoint.
+            // The field names must be "username" and "password".
+            const formData = new URLSearchParams();
+            formData.append('username', email);
+            formData.append('password', password);
+
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData.toString(),
+                credentials: 'include' // important: tells browser to save the session cookie
+            });
+
+            if (res.ok) {
+                // Login succeeded — Spring Security redirected us to /api/auth/me
+                // which returns the current user's info as JSON
+                const user = await res.json();
+                redirectByRole(user.role);
+            } else {
+                // 401 — wrong credentials
+                showError('Invalid email or password. Please try again.');
+                btn.disabled = false;
+                btn.textContent = 'Log In →';
+            }
+
+        } catch (err) {
+            showError('Could not connect to server. Is the backend running?');
+            btn.disabled = false;
+            btn.textContent = 'Log In →';
+        }
+    }
+
+    // ── REDIRECT BY ROLE ──
+    // After login, check the user's role and send them to the right dashboard.
+    // This is where your polymorphic getDashboard() pays off —
+    // the backend encodes the role into the session, and we route based on it.
+    function redirectByRole(role) {
+        if (role === 'ADMIN') {
+            window.location.href = '/admin-dashboard';
+        } else if (role === 'SELLER') {
+            window.location.href = '/seller-dashboard';
+        } else {
+            // Fallback — unknown role, send to home
+            window.location.href = '/';
+        }
+    }
+
+    // ── SHOW ERROR ──
+    function showError(msg) {
+        const errorMsg = document.getElementById('errorMsg');
+        errorMsg.textContent = msg;
+        errorMsg.classList.add('show');
+    }
+
+    // ── ALLOW ENTER KEY ──
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Enter') handleLogin();
+    });
+</script>
+
+</body>
+</html>

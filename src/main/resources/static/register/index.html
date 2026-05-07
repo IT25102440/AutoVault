@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>AutoLane — Register</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --black: #0d0d0d;
+            --white: #f5f4f0;
+            --accent: #e8ff47;
+            --grey: #1a1a1a;
+            --muted: #888;
+            --border: #2a2a2a;
+            --error: #ff4444;
+            --success: #47ff8a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            background: var(--black);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+        }
+        .navbar-brand {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            color: var(--accent) !important;
+            letter-spacing: 2px;
+            text-decoration: none;
+        }
+        .navbar-brand span { color: var(--white); }
+
+        /* ── PAGE LAYOUT ── */
+        .page-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1rem;
+        }
+
+        /* ── CARD ── */
+        .register-card {
+            width: 100%;
+            max-width: 440px;
+            background: #161616;
+            border: 1px solid var(--border);
+            padding: 2.5rem;
+        }
+
+        .card-eyebrow {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .card-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.8rem;
+            letter-spacing: 1px;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        .card-sub {
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-bottom: 2rem;
+        }
+
+        /* ── FORM FIELDS ── */
+        .field-wrap { margin-bottom: 1.2rem; }
+        .field-wrap label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+        .field-wrap input {
+            width: 100%;
+            background: var(--grey);
+            border: 1px solid var(--border);
+            color: var(--white);
+            padding: 0.85rem 1rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .field-wrap input:focus { border-color: var(--accent); }
+        .field-wrap input::placeholder { color: #555; }
+        .field-wrap input.invalid { border-color: var(--error); }
+
+        /* ── FIELD HINT ── */
+        .field-hint {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-top: 0.35rem;
+        }
+        .field-hint.error { color: var(--error); }
+
+        /* ── ALERT MESSAGES ── */
+        .alert-msg {
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            margin-bottom: 1.2rem;
+            display: none;
+        }
+        .alert-msg.show { display: block; }
+        .alert-msg.error {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+        .alert-msg.success {
+            background: rgba(71, 255, 138, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        /* ── SUBMIT BUTTON ── */
+        .submit-btn {
+            width: 100%;
+            background: var(--accent);
+            color: var(--black);
+            border: 1px solid var(--accent);
+            padding: 0.9rem;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+        }
+        .submit-btn:hover { background: transparent; color: var(--accent); }
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* ── FOOTER LINK ── */
+        .card-footer-link {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--muted);
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+        .card-footer-link a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .card-footer-link a:hover { text-decoration: underline; }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar d-flex justify-content-between align-items-center">
+    <a href="/" class="navbar-brand">Auto<span>Lane</span></a>
+</nav>
+
+<!-- CENTERED CARD -->
+<div class="page-center">
+    <div class="register-card">
+
+        <div class="card-eyebrow">Create Account</div>
+        <div class="card-title">Start Selling</div>
+        <div class="card-sub">Register as a seller to list your cars on AutoLane.</div>
+
+        <!-- Alert messages -->
+        <div class="alert-msg error" id="errorMsg"></div>
+        <div class="alert-msg success" id="successMsg"></div>
+
+        <!-- Name -->
+        <div class="field-wrap">
+            <label for="name">Full Name</label>
+            <input
+                    type="text"
+                    id="name"
+                    placeholder="John Silva"
+                    autocomplete="name"
+                    required
+            />
+        </div>
+
+        <!-- Email -->
+        <div class="field-wrap">
+            <label for="email">Email Address</label>
+            <input
+                    type="email"
+                    id="email"
+                    placeholder="you@example.com"
+                    autocomplete="email"
+                    required
+            />
+        </div>
+
+        <!-- Password -->
+        <div class="field-wrap">
+            <label for="password">Password</label>
+            <input
+                    type="password"
+                    id="password"
+                    placeholder="••••••••"
+                    autocomplete="new-password"
+                    required
+            />
+            <div class="field-hint" id="passwordHint">Minimum 6 characters.</div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="field-wrap">
+            <label for="confirmPassword">Confirm Password</label>
+            <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="••••••••"
+                    autocomplete="new-password"
+                    required
+            />
+            <div class="field-hint" id="confirmHint"></div>
+        </div>
+
+        <button class="submit-btn" id="registerBtn" onclick="handleRegister()">
+            Create Account →
+        </button>
+
+        <div class="card-footer-link">
+            Already have an account? <a href="/login">Log in</a>
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 AutoLane · SE1020 University Project</p>
+</footer>
+
+<script>
+    // ── PASSWORD MATCH VALIDATION ──
+    // Give live feedback as the user types in the confirm field.
+    document.getElementById('confirmPassword').addEventListener('input', () => {
+        const password = document.getElementById('password').value;
+        const confirm = document.getElementById('confirmPassword').value;
+        const hint = document.getElementById('confirmHint');
+
+        if (confirm.length === 0) {
+            hint.textContent = '';
+            hint.className = 'field-hint';
+        } else if (password !== confirm) {
+            hint.textContent = 'Passwords do not match.';
+            hint.className = 'field-hint error';
+        } else {
+            hint.textContent = '✓ Passwords match.';
+            hint.className = 'field-hint';
+            hint.style.color = '#47ff8a';
+        }
+    });
+
+    // ── HANDLE REGISTER ──
+    // Calls POST /api/auth/register with a JSON body.
+    // This maps to AuthController → UserService.registerSeller()
+    // The UserDTO on the backend expects: name, email, password
+    async function handleRegister() {
+        const btn = document.getElementById('registerBtn');
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const confirm = document.getElementById('confirmPassword').value;
+
+        // ── CLIENT-SIDE VALIDATION ──
+        // Always validate on the frontend too — don't rely only on backend validation.
+        if (!name || !email || !password || !confirm) {
+            showError('Please fill in all fields.');
+            return;
+        }
+
+        if (password.length < 6) {
+            showError('Password must be at least 6 characters.');
+            return;
+        }
+
+        if (password !== confirm) {
+            showError('Passwords do not match.');
+            return;
+        }
+
+        // Disable button while request is in flight
+        btn.disabled = true;
+        btn.textContent = 'Creating account...';
+        hideMessages();
+
+        try {
+            // This endpoint expects JSON — unlike the login endpoint which
+            // expects URL-encoded form data. Your AuthController reads this
+            // with @RequestBody UserDTO dto.
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ name, email, password })
+            });
+
+            if (res.ok) {
+                // Registration successful — show success message and redirect to login
+                showSuccess('Account created! Redirecting to login...');
+                btn.textContent = 'Done ✓';
+
+                // Wait 1.5 seconds so the user can read the success message, then redirect
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 1500);
+
+            } else {
+                // The backend returned an error — try to read the message from the response
+                let message = 'Registration failed. Please try again.';
+                try {
+                    const data = await res.json();
+                    // Your backend may return { message: "Email already in use" } etc.
+                    if (data.message) message = data.message;
+                } catch (_) { /* response wasn't JSON — use default message */ }
+
+                showError(message);
+                btn.disabled = false;
+                btn.textContent = 'Create Account →';
+            }
+
+        } catch (err) {
+            showError('Could not connect to server. Is the backend running?');
+            btn.disabled = false;
+            btn.textContent = 'Create Account →';
+        }
+    }
+
+    // ── HELPERS ──
+    function showError(msg) {
+        const el = document.getElementById('errorMsg');
+        el.textContent = msg;
+        el.classList.add('show');
+        document.getElementById('successMsg').classList.remove('show');
+    }
+
+    function showSuccess(msg) {
+        const el = document.getElementById('successMsg');
+        el.textContent = msg;
+        el.classList.add('show');
+        document.getElementById('errorMsg').classList.remove('show');
+    }
+
+    function hideMessages() {
+        document.getElementById('errorMsg').classList.remove('show');
+        document.getElementById('successMsg').classList.remove('show');
+    }
+
+    // Allow Enter key to submit
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Enter') handleRegister();
+    });
+</script>
+
+</body>
+</html>
