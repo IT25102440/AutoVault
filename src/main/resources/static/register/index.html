@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="icon" type="image/png" href="/icns/favicon.png"/>
     <title>AutoLane — Register</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -259,12 +260,11 @@
 </div>
 
 <footer>
-    <p>© 2025 AutoLane · SE1020 University Project</p>
+    <p>© 2026 AutoLane | WD.08.1.149</p>
 </footer>
 
 <script>
-    // ── PASSWORD MATCH VALIDATION ──
-    // Give live feedback as the user types in the confirm field.
+    // live password match feedback
     document.getElementById('confirmPassword').addEventListener('input', () => {
         const password = document.getElementById('password').value;
         const confirm = document.getElementById('confirmPassword').value;
@@ -283,10 +283,6 @@
         }
     });
 
-    // ── HANDLE REGISTER ──
-    // Calls POST /api/auth/register with a JSON body.
-    // This maps to AuthController → UserService.registerSeller()
-    // The UserDTO on the backend expects: name, email, password
     async function handleRegister() {
         const btn = document.getElementById('registerBtn');
         const name = document.getElementById('name').value.trim();
@@ -294,8 +290,6 @@
         const password = document.getElementById('password').value;
         const confirm = document.getElementById('confirmPassword').value;
 
-        // ── CLIENT-SIDE VALIDATION ──
-        // Always validate on the frontend too — don't rely only on backend validation.
         if (!name || !email || !password || !confirm) {
             showError('Please fill in all fields.');
             return;
@@ -311,15 +305,11 @@
             return;
         }
 
-        // Disable button while request is in flight
         btn.disabled = true;
         btn.textContent = 'Creating account...';
         hideMessages();
 
         try {
-            // This endpoint expects JSON — unlike the login endpoint which
-            // expects URL-encoded form data. Your AuthController reads this
-            // with @RequestBody UserDTO dto.
             const res = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -328,23 +318,18 @@
             });
 
             if (res.ok) {
-                // Registration successful — show success message and redirect to login
                 showSuccess('Account created! Redirecting to login...');
                 btn.textContent = 'Done ✓';
-
-                // Wait 1.5 seconds so the user can read the success message, then redirect
                 setTimeout(() => {
                     window.location.href = '/login';
                 }, 1500);
 
             } else {
-                // The backend returned an error — try to read the message from the response
                 let message = 'Registration failed. Please try again.';
                 try {
                     const data = await res.json();
-                    // Your backend may return { message: "Email already in use" } etc.
                     if (data.message) message = data.message;
-                } catch (_) { /* response wasn't JSON — use default message */ }
+                } catch (_) {}
 
                 showError(message);
                 btn.disabled = false;
@@ -358,7 +343,6 @@
         }
     }
 
-    // ── HELPERS ──
     function showError(msg) {
         const el = document.getElementById('errorMsg');
         el.textContent = msg;
@@ -378,7 +362,6 @@
         document.getElementById('successMsg').classList.remove('show');
     }
 
-    // Allow Enter key to submit
     document.addEventListener('keydown', e => {
         if (e.key === 'Enter') handleRegister();
     });

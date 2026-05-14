@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="icon" type="image/png" href="/icns/favicon.png"/>
     <title>AutoLane — Seller Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -63,32 +64,50 @@
 
         /* ── PAGE HEADER ── */
         .page-header {
-            padding: 2.5rem 2rem 1.5rem;
+            padding: 1.75rem 2rem;
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
+            align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
         }
-        .page-header-left .eyebrow {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--accent);
-            font-weight: 600;
-            margin-bottom: 0.3rem;
+        .profile-block {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
         }
-        .page-header-left h1 {
+        .profile-avatar-lg {
+            width: 58px;
+            height: 58px;
+            background: var(--accent);
+            color: var(--black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-family: 'Bebas Neue', sans-serif;
-            font-size: 2.5rem;
+            font-size: 1.9rem;
+            letter-spacing: 1px;
+            flex-shrink: 0;
+        }
+        .profile-role-tag {
+            font-size: 0.62rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin-bottom: 0.2rem;
+        }
+        .profile-name-lg {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.2rem;
             letter-spacing: 1px;
             line-height: 1;
         }
-        .page-header-left .welcome {
+        .profile-email-lg {
+            font-size: 0.82rem;
             color: var(--muted);
-            font-size: 0.85rem;
-            margin-top: 0.3rem;
+            margin-top: 0.25rem;
         }
         .add-btn {
             background: var(--accent);
@@ -318,10 +337,13 @@
 
 <!-- PAGE HEADER -->
 <div class="page-header">
-    <div class="page-header-left">
-        <div class="eyebrow">Seller Dashboard</div>
-        <h1>My Listings</h1>
-        <div class="welcome" id="welcomeMsg">Loading...</div>
+    <div class="profile-block">
+        <div class="profile-avatar-lg" id="profileAvatar">?</div>
+        <div>
+            <div class="profile-role-tag">Seller Account</div>
+            <div class="profile-name-lg" id="profileName">Loading...</div>
+            <div class="profile-email-lg" id="profileEmail"></div>
+        </div>
     </div>
     <a href="/add-car" class="add-btn">+ Add New Car</a>
 </div>
@@ -372,43 +394,35 @@
 <div class="toast-bar" id="toastBar"></div>
 
 <footer>
-    <p>© 2025 AutoLane · SE1020 University Project</p>
+    <p>© 2026 AutoLane | WD.08.1.149</p>
 </footer>
 
 <script>
-    // ── ENTRY POINT ──
-    // First thing: verify the session is active.
-    // If not logged in, redirect to login page immediately.
-    // This is the frontend equivalent of your @PreAuthorize on the backend.
     document.addEventListener('DOMContentLoaded', async () => {
         await checkAuthAndLoad();
     });
 
     async function checkAuthAndLoad() {
         try {
-            // GET /api/auth/me — returns current logged-in user, or 401 if not logged in
             const res = await fetch('/api/auth/me', { credentials: 'include' });
 
             if (!res.ok) {
-                // Not logged in — send to login page
                 window.location.href = '/login';
                 return;
             }
 
             const user = await res.json();
 
-            // Extra safety — make sure this is actually a SELLER, not an ADMIN
-            // who somehow ended up on the wrong page
+            // redirect if wrong role
             if (user.role !== 'SELLER') {
                 window.location.href = '/admin-dashboard';
                 return;
             }
 
-            // Show welcome message with seller's name
-            document.getElementById('welcomeMsg').textContent =
-                `Logged in as ${user.name} · ${user.email}`;
+            document.getElementById('profileAvatar').textContent = user.name.charAt(0).toUpperCase();
+            document.getElementById('profileName').textContent = user.name;
+            document.getElementById('profileEmail').textContent = user.email;
 
-            // Now load the seller's cars
             loadCars();
 
         } catch (err) {
@@ -416,9 +430,6 @@
         }
     }
 
-    // ── LOAD SELLER'S CARS ──
-    // GET /api/seller/cars — Spring Security ensures only the logged-in
-    // seller's cars come back. The backend reads the session to know who's asking.
     async function loadCars() {
         try {
             const res = await fetch('/api/seller/cars', { credentials: 'include' });
@@ -464,7 +475,7 @@
           <div class="car-row-info">
             <div class="car-name">${car.brand} ${car.model}</div>
             <div class="car-meta">${car.year} · ${Number(car.mileage).toLocaleString()} km · ${car.location || 'No location'}</div>
-            <div class="car-price">$${Number(car.price).toLocaleString()}</div>
+            <div class="car-price">Rs. ${Number(car.price).toLocaleString()}</div>
           </div>
           <div class="car-row-actions">
             <a href="/edit-car?id=${car.id}" class="action-btn edit">Edit</a>
@@ -491,13 +502,11 @@
         const highest = Math.max(...prices);
         const lowest = Math.min(...prices);
 
-        document.getElementById('statHighest').textContent = `$${highest.toLocaleString()}`;
-        document.getElementById('statLowest').textContent = `$${lowest.toLocaleString()}`;
+        document.getElementById('statHighest').textContent = `Rs. ${highest.toLocaleString()}`;
+        document.getElementById('statLowest').textContent = `Rs. ${lowest.toLocaleString()}`;
     }
 
-    // ── DELETE FLOW ──
-    // We use a confirmation modal instead of window.confirm()
-    // to keep the design consistent and give the user a clear warning.
+    // custom modal instead of browser confirm()
     let pendingDeleteId = null;
 
     function askDelete(id, name) {
@@ -506,7 +515,6 @@
             `This will permanently remove "${name}" from AutoLane. This cannot be undone.`;
         document.getElementById('deleteModal').classList.add('show');
 
-        // Wire up the confirm button to actually delete
         document.getElementById('confirmDeleteBtn').onclick = () => confirmDelete(id);
     }
 
@@ -515,9 +523,6 @@
         pendingDeleteId = null;
     }
 
-    // ── CONFIRM DELETE ──
-    // DELETE /api/seller/cars/{id}
-    // Maps to SellerController → CarService.deleteCar()
     async function confirmDelete(id) {
         closeModal();
 
@@ -528,11 +533,10 @@
             });
 
             if (res.ok) {
-                // Remove the row from the DOM without reloading the whole page
+                // update DOM without reload
                 const row = document.getElementById(`car-row-${id}`);
                 if (row) row.remove();
 
-                // Recount and update stats
                 const remaining = document.querySelectorAll('.car-row');
                 document.getElementById('statTotal').textContent = remaining.length;
 
@@ -551,22 +555,16 @@
         }
     }
 
-    // ── LOGOUT ──
-    // POST /api/auth/logout — defined in your SecurityConfig
-    // On success, Spring Security clears the session and returns 200
     async function handleLogout() {
         try {
             await fetch('/api/auth/logout', {
                 method: 'POST',
                 credentials: 'include'
             });
-        } catch (_) {
-            // Even if the request fails, clear the local state and redirect
-        }
+        } catch (_) {}
         window.location.href = '/login';
     }
 
-    // ── TOAST ──
     function showToast(msg, type = 'error') {
         const toast = document.getElementById('toastBar');
         toast.textContent = msg;

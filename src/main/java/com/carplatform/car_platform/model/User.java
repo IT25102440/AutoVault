@@ -1,5 +1,6 @@
 package com.carplatform.car_platform.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +20,7 @@ public abstract class User {
     @Column(unique = true)
     private String email;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     public void login() {

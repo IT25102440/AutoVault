@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/seller")
@@ -27,6 +28,17 @@ public class SellerController {
     public List<Car> getMyCars(Principal principal) {
         User seller = userService.findByEmail(principal.getName());
         return carService.getCarsBySeller(seller.getId());
+    }
+
+    //get a single car by ID, verifying it belongs to the logged-in seller
+    @GetMapping("/cars/{id}")
+    public ResponseEntity<?> getMyCarById(@PathVariable Long id, Principal principal) {
+        User seller = userService.findByEmail(principal.getName());
+        Car car = carService.getCarById(id);
+        if (!car.getSeller().getId().equals(seller.getId())) {
+            return ResponseEntity.status(403).body(Map.of("message", "You don't have permission to edit this car"));
+        }
+        return ResponseEntity.ok(car);
     }
 
     //add a new car listing

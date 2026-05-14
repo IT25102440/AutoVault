@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="icon" type="image/png" href="/icns/favicon.png"/>
     <title>AutoLane — Edit Car</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -134,7 +135,8 @@
             color: var(--muted);
             margin-bottom: 0.5rem;
         }
-        .field-wrap input {
+        .field-wrap input,
+        .field-wrap select {
             background: var(--grey);
             border: 1px solid var(--border);
             color: var(--white);
@@ -145,8 +147,11 @@
             transition: border-color 0.2s;
             width: 100%;
         }
-        .field-wrap input:focus { border-color: var(--accent); }
+        .field-wrap input:focus,
+        .field-wrap select:focus { border-color: var(--accent); }
         .field-wrap input::placeholder { color: #555; }
+        .field-wrap select { cursor: pointer; appearance: none; }
+        .field-wrap select option { background: var(--grey); color: var(--white); }
 
         /* ── CURRENT IMAGE ── */
         .current-image-wrap {
@@ -384,8 +389,35 @@
                     <input type="number" id="price" min="0" step="0.01" required />
                 </div>
                 <div class="field-wrap">
-                    <label for="location">Location</label>
-                    <input type="text" id="location" />
+                    <label for="location">District</label>
+                    <select id="location">
+                        <option value="">Select a district</option>
+                        <option value="Ampara">Ampara</option>
+                        <option value="Anuradhapura">Anuradhapura</option>
+                        <option value="Badulla">Badulla</option>
+                        <option value="Batticaloa">Batticaloa</option>
+                        <option value="Colombo">Colombo</option>
+                        <option value="Galle">Galle</option>
+                        <option value="Gampaha">Gampaha</option>
+                        <option value="Hambantota">Hambantota</option>
+                        <option value="Jaffna">Jaffna</option>
+                        <option value="Kalutara">Kalutara</option>
+                        <option value="Kandy">Kandy</option>
+                        <option value="Kegalle">Kegalle</option>
+                        <option value="Kilinochchi">Kilinochchi</option>
+                        <option value="Kurunegala">Kurunegala</option>
+                        <option value="Mannar">Mannar</option>
+                        <option value="Matale">Matale</option>
+                        <option value="Matara">Matara</option>
+                        <option value="Monaragala">Monaragala</option>
+                        <option value="Mullaitivu">Mullaitivu</option>
+                        <option value="Nuwara Eliya">Nuwara Eliya</option>
+                        <option value="Polonnaruwa">Polonnaruwa</option>
+                        <option value="Puttalam">Puttalam</option>
+                        <option value="Ratnapura">Ratnapura</option>
+                        <option value="Trincomalee">Trincomalee</option>
+                        <option value="Vavuniya">Vavuniya</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -431,16 +463,13 @@
 </div>
 
 <footer>
-    <p>© 2025 AutoLane · SE1020 University Project</p>
+    <p>© 2026 AutoLane | WD.08.1.149</p>
 </footer>
 
 <script>
-    // Store the car ID globally so handleSubmit() can use it
     let carId = null;
 
-    // ── ENTRY POINT ──
     document.addEventListener('DOMContentLoaded', async () => {
-        // Step 1: Auth guard — must be a logged-in SELLER
         try {
             const authRes = await fetch('/api/auth/me', { credentials: 'include' });
             if (!authRes.ok) { window.location.href = '/login'; return; }
@@ -451,32 +480,22 @@
             return;
         }
 
-        // Step 2: Read the car ID from the URL
         const params = new URLSearchParams(window.location.search);
         carId = params.get('id');
 
         if (!carId) {
-            // No ID in URL — can't edit without knowing which car
             document.getElementById('loadingState').style.display = 'none';
             document.getElementById('errorState').style.display = 'block';
             return;
         }
 
-        // Step 3: Fetch the car's current data and pre-fill the form
         await loadCarData(carId);
-
-        // Step 4: Set up image upload zone
         setupUploadZone();
     });
 
-    // ── LOAD CAR DATA AND PRE-FILL FORM ──
-    // This is what makes edit-car different from add-car.
-    // We fetch the existing car, then populate every input field with its values.
     async function loadCarData(id) {
         try {
-            // We use the seller endpoint here — it verifies the car belongs
-            // to the logged-in seller. If someone tries to edit a car they
-            // don't own, the backend returns 403 or 404.
+            // seller endpoint verifies ownership server-side
             const res = await fetch(`/api/seller/cars/${id}`, { credentials: 'include' });
 
             if (!res.ok) {
@@ -487,15 +506,12 @@
 
             const car = await res.json();
 
-            // Hide loading, show form
             document.getElementById('loadingState').style.display = 'none';
             document.getElementById('formWrap').style.display = 'block';
 
-            // Update page subtitle with the car name
             document.getElementById('carSubtitle').textContent = `${car.brand} ${car.model}`;
             document.title = `AutoLane — Edit ${car.brand} ${car.model}`;
 
-            // Pre-fill all the form fields with current values
             document.getElementById('brand').value = car.brand || '';
             document.getElementById('model').value = car.model || '';
             document.getElementById('year').value = car.year || '';
@@ -503,7 +519,6 @@
             document.getElementById('price').value = car.price || '';
             document.getElementById('location').value = car.location || '';
 
-            // Show the current image if one exists
             const imageSlot = document.getElementById('currentImageSlot');
             if (car.imagePath) {
                 imageSlot.innerHTML = `
@@ -520,7 +535,6 @@
         }
     }
 
-    // ── IMAGE UPLOAD ZONE ──
     function setupUploadZone() {
         const input = document.getElementById('imageInput');
         const zone = document.getElementById('uploadZone');
@@ -560,11 +574,6 @@
         document.getElementById('uploadZone').style.display = 'block';
     }
 
-    // ── HANDLE SUBMIT ──
-    // PUT /api/seller/cars/{id}
-    // Same multipart/form-data approach as add-car — because the image
-    // might be replaced. If no new image is selected, the backend
-    // should keep the existing imagePath unchanged.
     async function handleSubmit() {
         const btn = document.getElementById('submitBtn');
 
@@ -587,17 +596,11 @@
             return;
         }
 
-        // Build FormData — same as add-car
         const formData = new FormData();
-        formData.append('brand', brand);
-        formData.append('model', model);
-        formData.append('year', year);
-        formData.append('mileage', mileage);
-        formData.append('price', price);
-        formData.append('location', location);
+        const carData = { brand, model, year: Number(year), mileage: Number(mileage), price: Number(price), location };
+        formData.append('car', new Blob([JSON.stringify(carData)], { type: 'application/json' }));
 
-        // Only append new image if one was selected
-        // If not, the backend keeps the existing image
+        // no new image = backend keeps the existing one
         if (imageFile) {
             formData.append('image', imageFile);
         }
@@ -607,14 +610,10 @@
         hideAlerts();
 
         try {
-            // PUT /api/seller/cars/{id}
-            // Maps to SellerController → CarService.updateCar()
-            // → Car.updateDetails() — this is where your OOP updateDetails() method is called
             const res = await fetch(`/api/seller/cars/${carId}`, {
                 method: 'PUT',
                 credentials: 'include',
                 body: formData
-                // Again — no Content-Type header. Let the browser handle it.
             });
 
             if (res.ok) {
@@ -641,7 +640,6 @@
         }
     }
 
-    // ── HELPERS ──
     function showAlert(type, msg) {
         hideAlerts();
         const el = document.getElementById(type === 'error' ? 'errorMsg' : 'successMsg');

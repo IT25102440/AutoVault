@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="icon" type="image/png" href="/icns/favicon.png"/>
     <title>AutoLane — Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -74,27 +75,57 @@
 
         /* ── PAGE HEADER ── */
         .page-header {
-            padding: 2.5rem 2rem 1.5rem;
+            padding: 1.75rem 2rem;
             border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
-        .page-header .eyebrow {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--admin);
-            font-weight: 600;
-            margin-bottom: 0.3rem;
+        .profile-block {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
         }
-        .page-header h1 {
+        .profile-avatar-lg {
+            width: 58px;
+            height: 58px;
+            background: var(--admin);
+            color: var(--black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-family: 'Bebas Neue', sans-serif;
-            font-size: 2.5rem;
+            font-size: 1.9rem;
+            letter-spacing: 1px;
+            flex-shrink: 0;
+        }
+        .profile-role-tag {
+            font-size: 0.62rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--admin);
+            margin-bottom: 0.2rem;
+        }
+        .profile-name-lg {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.2rem;
             letter-spacing: 1px;
             line-height: 1;
         }
-        .page-header .welcome {
+        .profile-email-lg {
+            font-size: 0.82rem;
             color: var(--muted);
-            font-size: 0.85rem;
-            margin-top: 0.3rem;
+            margin-top: 0.25rem;
+        }
+        .page-header-label {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            color: var(--muted);
+            text-align: right;
         }
 
         /* ── STATS ROW ── */
@@ -361,9 +392,15 @@
 
 <!-- PAGE HEADER -->
 <div class="page-header">
-    <div class="eyebrow">Admin Panel</div>
-    <h1>Control Centre</h1>
-    <div class="welcome" id="welcomeMsg">Loading...</div>
+    <div class="profile-block">
+        <div class="profile-avatar-lg" id="profileAvatar">?</div>
+        <div>
+            <div class="profile-role-tag">Admin Account</div>
+            <div class="profile-name-lg" id="profileName">Loading...</div>
+            <div class="profile-email-lg" id="profileEmail"></div>
+        </div>
+    </div>
+    <div class="page-header-label">Control Centre</div>
 </div>
 
 <!-- STATS -->
@@ -431,13 +468,12 @@
 <div class="toast-bar" id="toastBar"></div>
 
 <footer>
-    <p>© 2025 AutoLane · SE1020 University Project</p>
+    <p>© 2026 AutoLane | WD.08.1.149</p>
 </footer>
 
 <script>
-    // ── ENTRY POINT ──
     document.addEventListener('DOMContentLoaded', async () => {
-        // Auth guard — must be ADMIN
+        // auth guard — must be ADMIN
         try {
             const res = await fetch('/api/auth/me', { credentials: 'include' });
             if (!res.ok) { window.location.href = '/login'; return; }
@@ -445,26 +481,23 @@
             const user = await res.json();
 
             if (user.role !== 'ADMIN') {
-                // Logged in but not admin — send to seller dashboard
                 window.location.href = '/seller-dashboard';
                 return;
             }
 
-            document.getElementById('welcomeMsg').textContent =
-                `Logged in as ${user.name} · ${user.email}`;
+            document.getElementById('profileAvatar').textContent = user.name.charAt(0).toUpperCase();
+            document.getElementById('profileName').textContent = user.name;
+            document.getElementById('profileEmail').textContent = user.email;
 
         } catch (err) {
             window.location.href = '/login';
             return;
         }
 
-        // Load both datasets in parallel for speed
-        // Promise.all runs both fetches at the same time instead of one after the other
+        // load both in parallel
         await Promise.all([loadCars(), loadSellers()]);
     });
 
-    // ── LOAD ALL CARS ──
-    // GET /api/admin/cars → AdminController → CarService.getAllCars()
     async function loadCars() {
         try {
             const res = await fetch('/api/admin/cars', { credentials: 'include' });
@@ -487,7 +520,6 @@
         }
     }
 
-    // ── RENDER CARS ──
     function renderCars(cars) {
         const list = document.getElementById('carsList');
         list.innerHTML = '';
@@ -502,15 +534,13 @@
                onerror="this.outerHTML='<div class=\\'car-thumb-placeholder\\'>🚗</div>'">`
                 : `<div class="car-thumb-placeholder">🚗</div>`;
 
-            // Show the seller's name underneath the car info
-            // This demonstrates the @ManyToOne relationship returning nested seller data
             const sellerName = car.seller?.name || car.sellerName || 'Unknown seller';
 
             row.innerHTML = `
           ${thumbHtml}
           <div class="car-info">
             <div class="car-name">${car.brand} ${car.model}</div>
-            <div class="car-meta">${car.year} · ${Number(car.mileage).toLocaleString()} km · $${Number(car.price).toLocaleString()}</div>
+            <div class="car-meta">${car.year} · ${Number(car.mileage).toLocaleString()} km · Rs. ${Number(car.price).toLocaleString()}</div>
             <div class="car-seller">Seller: ${sellerName}</div>
           </div>
           <button class="del-btn" onclick="askDelete('car', ${car.id}, '${car.brand} ${car.model}')">
@@ -522,8 +552,6 @@
         });
     }
 
-    // ── LOAD ALL SELLERS ──
-    // GET /api/admin/sellers → AdminController → UserService.getAllSellers()
     async function loadSellers() {
         try {
             const res = await fetch('/api/admin/sellers', { credentials: 'include' });
@@ -546,7 +574,6 @@
         }
     }
 
-    // ── RENDER SELLERS ──
     function renderSellers(sellers) {
         const list = document.getElementById('sellersList');
         list.innerHTML = '';
@@ -556,13 +583,11 @@
             row.className = 'seller-row';
             row.id = `seller-${seller.id}`;
 
-            // Generate initials for the avatar from the seller's name
             const initials = seller.name
                 ? seller.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
                 : '??';
 
-            // Show how many cars this seller has listed
-            const carCount = seller.cars ? seller.cars.length : 0;
+            const carCount = seller.carCount || 0;
 
             row.innerHTML = `
           <div class="seller-avatar">${initials}</div>
@@ -580,7 +605,6 @@
         });
     }
 
-    // ── TAB SWITCHING ──
     function switchTab(name, btn) {
         document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -588,9 +612,6 @@
         btn.classList.add('active');
     }
 
-    // ── DELETE FLOW ──
-    // One unified delete function for both cars and sellers.
-    // 'type' is either 'car' or 'seller' — determines which endpoint to call.
     let pendingDelete = null;
 
     function askDelete(type, id, label) {
@@ -613,15 +634,11 @@
         pendingDelete = null;
     }
 
-    // ── CONFIRM DELETE ──
     async function confirmDelete() {
         if (!pendingDelete) return;
         const { type, id, label } = pendingDelete;
         closeModal();
 
-        // Choose the correct endpoint based on type
-        // Car:    DELETE /api/admin/cars/{id}    → AdminController → CarService.deleteCar()
-        // Seller: DELETE /api/admin/sellers/{id} → AdminController → UserService.deleteSeller()
         const url = type === 'car'
             ? `/api/admin/cars/${id}`
             : `/api/admin/sellers/${id}`;
@@ -633,12 +650,10 @@
             });
 
             if (res.ok) {
-                // Remove the row from the DOM
                 const rowId = type === 'car' ? `car-${id}` : `seller-${id}`;
                 const row = document.getElementById(rowId);
                 if (row) row.remove();
 
-                // Update the stat counter
                 const statEl = type === 'car'
                     ? document.getElementById('statCars')
                     : document.getElementById('statSellers');
@@ -658,7 +673,6 @@
         }
     }
 
-    // ── LOGOUT ──
     async function handleLogout() {
         try {
             await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
@@ -666,7 +680,6 @@
         window.location.href = '/login';
     }
 
-    // ── TOAST ──
     function showToast(msg, type = 'error') {
         const toast = document.getElementById('toastBar');
         toast.textContent = msg;

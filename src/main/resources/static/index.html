@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>AutoLane — Second-Hand Cars</title>
+    <link rel="icon" type="image/png" href="/icns/favicon.png"/>
+    <title>AutoLane - Second-Hand Cars</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
     <style>
@@ -68,6 +69,50 @@
         .nav-btn.filled:hover {
             background: transparent;
             color: var(--accent);
+        }
+        .nav-user-chip {
+            display: flex;
+            align-items: stretch;
+            border: 1px solid var(--border);
+            background: transparent;
+            text-decoration: none;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .nav-user-chip:hover {
+            border-color: var(--accent);
+        }
+        .nav-avatar {
+            width: 32px;
+            background: var(--accent);
+            color: var(--black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            flex-shrink: 0;
+            border-right: 1px solid var(--border);
+        }
+        .nav-username {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--white);
+            white-space: nowrap;
+            letter-spacing: 0;
+            text-transform: none;
+            padding: 0.35rem 1rem 0.35rem 0.7rem;
+        }
+        .nav-btn-logout {
+            border-color: var(--border);
+            color: var(--muted);
+            letter-spacing: 0.5px;
+        }
+        .nav-btn-logout:hover {
+            background: rgba(255,60,60,0.08);
+            border-color: #ff4747;
+            color: #ff4747;
         }
 
         /* ── HERO ── */
@@ -145,6 +190,82 @@
             transition: all 0.2s;
         }
         .search-wrap button:hover { background: transparent; color: var(--accent); }
+        .search-wrap select {
+            background: var(--grey);
+            border: 1px solid var(--border);
+            border-right: none;
+            color: var(--white);
+            padding: 0.85rem 1rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            min-width: 160px;
+        }
+        .search-wrap select:focus { border-color: var(--accent); }
+        .search-wrap select option { background: var(--grey); }
+
+        /* ── FILTER STRIP ── */
+        .filter-strip {
+            display: flex;
+            align-items: flex-end;
+            gap: 1.5rem;
+            padding: 0 2rem 1.75rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border);
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        .filter-label {
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+        }
+        .filter-input {
+            background: var(--grey);
+            border: 1px solid var(--border);
+            color: var(--white);
+            padding: 0.5rem 0.7rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 90px;
+        }
+        .filter-input:focus { border-color: var(--accent); }
+        .filter-input::placeholder { color: var(--muted); }
+        .filter-input[type=number]::-webkit-inner-spin-button,
+        .filter-input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+        .filter-input[type=number] { -moz-appearance: textfield; }
+        .filter-range { display: flex; }
+        .filter-range .filter-input:first-child { border-right: none; }
+        .filter-select {
+            width: auto;
+            min-width: 148px;
+            cursor: pointer;
+            appearance: none;
+        }
+        .filter-select option { background: var(--grey); }
+        .filter-clear {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 0.5rem 1rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-clear:hover { border-color: var(--accent); color: var(--accent); }
 
         /* ── SECTION LABEL ── */
         .section-label {
@@ -175,12 +296,10 @@
         /* ── CAR GRID ── */
         .car-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1px;
-            padding: 0 2rem 4rem;
-            background: var(--border);
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem 2rem 4rem;
         }
-        .car-grid > * { background: var(--black); }
 
         /* ── CAR CARD ── */
         .car-card {
@@ -320,9 +439,9 @@
 <!-- NAVBAR -->
 <nav class="navbar d-flex justify-content-between align-items-center">
     <a href="/" class="navbar-brand">Auto<span>Lane</span></a>
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 align-items-center" id="navActions">
         <a href="/login" class="nav-btn">Login</a>
-        <a href="/register" class="nav-btn filled">Sell a Car</a>
+        <a href="/register" class="nav-btn filled">Sign Up</a>
     </div>
 </nav>
 
@@ -331,7 +450,35 @@
     <h1>Find Your<br/><em>Next Drive</em></h1>
     <p>Browse hundreds of verified second-hand cars listed by real sellers.</p>
     <div class="search-wrap">
-        <input type="text" id="searchInput" placeholder="Search by brand — Toyota, Honda, BMW..." />
+        <input type="text" id="searchBrand" placeholder="Brand — Toyota, Honda, BMW..." />
+        <select id="searchLocation">
+            <option value="">All Districts</option>
+            <option value="Ampara">Ampara</option>
+            <option value="Anuradhapura">Anuradhapura</option>
+            <option value="Badulla">Badulla</option>
+            <option value="Batticaloa">Batticaloa</option>
+            <option value="Colombo">Colombo</option>
+            <option value="Galle">Galle</option>
+            <option value="Gampaha">Gampaha</option>
+            <option value="Hambantota">Hambantota</option>
+            <option value="Jaffna">Jaffna</option>
+            <option value="Kalutara">Kalutara</option>
+            <option value="Kandy">Kandy</option>
+            <option value="Kegalle">Kegalle</option>
+            <option value="Kilinochchi">Kilinochchi</option>
+            <option value="Kurunegala">Kurunegala</option>
+            <option value="Mannar">Mannar</option>
+            <option value="Matale">Matale</option>
+            <option value="Matara">Matara</option>
+            <option value="Monaragala">Monaragala</option>
+            <option value="Mullaitivu">Mullaitivu</option>
+            <option value="Nuwara Eliya">Nuwara Eliya</option>
+            <option value="Polonnaruwa">Polonnaruwa</option>
+            <option value="Puttalam">Puttalam</option>
+            <option value="Ratnapura">Ratnapura</option>
+            <option value="Trincomalee">Trincomalee</option>
+            <option value="Vavuniya">Vavuniya</option>
+        </select>
         <button onclick="searchCars()">Search</button>
     </div>
 </section>
@@ -341,6 +488,56 @@
     <h2>All Listings</h2>
     <span class="count" id="carCount">0</span>
     <div class="divider"></div>
+</div>
+
+<!-- FILTER STRIP -->
+<div class="filter-strip">
+    <div class="filter-group">
+        <div class="filter-label">District</div>
+        <select class="filter-input filter-select" id="fDistrict">
+            <option value="">All Districts</option>
+            <option value="Ampara">Ampara</option>
+            <option value="Anuradhapura">Anuradhapura</option>
+            <option value="Badulla">Badulla</option>
+            <option value="Batticaloa">Batticaloa</option>
+            <option value="Colombo">Colombo</option>
+            <option value="Galle">Galle</option>
+            <option value="Gampaha">Gampaha</option>
+            <option value="Hambantota">Hambantota</option>
+            <option value="Jaffna">Jaffna</option>
+            <option value="Kalutara">Kalutara</option>
+            <option value="Kandy">Kandy</option>
+            <option value="Kegalle">Kegalle</option>
+            <option value="Kilinochchi">Kilinochchi</option>
+            <option value="Kurunegala">Kurunegala</option>
+            <option value="Mannar">Mannar</option>
+            <option value="Matale">Matale</option>
+            <option value="Matara">Matara</option>
+            <option value="Monaragala">Monaragala</option>
+            <option value="Mullaitivu">Mullaitivu</option>
+            <option value="Nuwara Eliya">Nuwara Eliya</option>
+            <option value="Polonnaruwa">Polonnaruwa</option>
+            <option value="Puttalam">Puttalam</option>
+            <option value="Ratnapura">Ratnapura</option>
+            <option value="Trincomalee">Trincomalee</option>
+            <option value="Vavuniya">Vavuniya</option>
+        </select>
+    </div>
+    <div class="filter-group">
+        <div class="filter-label">Price (Rs.)</div>
+        <div class="filter-range">
+            <input type="number" class="filter-input" id="fPriceMin" placeholder="Min">
+            <input type="number" class="filter-input" id="fPriceMax" placeholder="Max">
+        </div>
+    </div>
+    <div class="filter-group">
+        <div class="filter-label">Year</div>
+        <div class="filter-range">
+            <input type="number" class="filter-input" id="fYearFrom" placeholder="From">
+            <input type="number" class="filter-input" id="fYearTo" placeholder="To">
+        </div>
+    </div>
+    <button class="filter-clear" id="clearFilters">Clear</button>
 </div>
 
 <div class="car-grid" id="carGrid">
@@ -361,76 +558,122 @@
 <div class="toast-bar" id="toastBar"></div>
 
 <footer>
-    <p>© 2025 AutoLane · SE1020 University Project</p>
+    <p>© 2026 AutoLane | WD.08.1.149</p>
 </footer>
 
 <script>
+    let allCars = [];
+
     // ── ENTRY POINT ──
-    // When the page loads, fetch all cars immediately.
     document.addEventListener('DOMContentLoaded', () => {
+        initNav();
         loadCars('/api/cars');
 
-        // Allow pressing Enter in the search box
-        document.getElementById('searchInput').addEventListener('keydown', e => {
+        document.getElementById('searchBrand').addEventListener('keydown', e => {
             if (e.key === 'Enter') searchCars();
+        });
+        document.getElementById('searchLocation').addEventListener('change', () => {
+            searchCars();
+        });
+
+        // Filter strip listeners
+        ['fPriceMin', 'fPriceMax', 'fYearFrom', 'fYearTo'].forEach(id => {
+            document.getElementById(id).addEventListener('input', applyFilters);
+        });
+        document.getElementById('fDistrict').addEventListener('change', applyFilters);
+        document.getElementById('clearFilters').addEventListener('click', () => {
+            ['fDistrict', 'fPriceMin', 'fPriceMax', 'fYearFrom', 'fYearTo'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            applyFilters();
         });
     });
 
-    // ── FETCH ALL CARS ──
-    // Calls GET /api/cars (public endpoint, no login needed)
-    // or GET /api/cars/search?brand=... if a query is passed
+    async function initNav() {
+        try {
+            const res = await fetch('/api/auth/me', { credentials: 'include' });
+            if (!res.ok) return;
+            const user = await res.json();
+            document.getElementById('navActions').innerHTML = `
+                <a href="/${user.dashboard}" class="nav-user-chip">
+                    <span class="nav-avatar">${user.name.charAt(0)}</span>
+                    <span class="nav-username">${user.name}</span>
+                </a>
+                <button class="nav-btn nav-btn-logout" onclick="handleLogout()">Log Out</button>
+            `;
+        } catch (_) {}
+    }
+
+    async function handleLogout() {
+        try {
+            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+        } catch (_) {}
+        window.location.href = '/login';
+    }
+
     async function loadCars(url) {
-        const grid = document.getElementById('carGrid');
         const loading = document.getElementById('loadingState');
-        const empty = document.getElementById('emptyState');
+        const empty   = document.getElementById('emptyState');
+        const grid    = document.getElementById('carGrid');
 
         grid.innerHTML = '';
         loading.style.display = 'block';
-        empty.style.display = 'none';
+        empty.style.display   = 'none';
 
         try {
             const res = await fetch(url, { credentials: 'include' });
-
             if (!res.ok) throw new Error('Failed to load listings');
-
-            const cars = await res.json();
-
+            allCars = await res.json();
             loading.style.display = 'none';
-            document.getElementById('carCount').textContent = cars.length;
-
-            if (cars.length === 0) {
-                empty.style.display = 'block';
-                return;
-            }
-
-            // Render each car as a card
-            cars.forEach(car => {
-                grid.appendChild(buildCard(car));
-            });
-
+            applyFilters();
         } catch (err) {
             loading.style.display = 'none';
             showToast('Could not connect to server. Is the backend running?');
         }
     }
 
-    // ── BUILD A CARD ──
-    // Takes one car object from the API and returns a DOM element.
-    // The car object looks like: { id, brand, model, year, price, mileage, location, imagePath }
+    function applyFilters() {
+        const district = document.getElementById('fDistrict').value;
+        const priceMin = parseFloat(document.getElementById('fPriceMin').value) || 0;
+        const priceMax = parseFloat(document.getElementById('fPriceMax').value) || Infinity;
+        const yearFrom = parseInt(document.getElementById('fYearFrom').value)   || 0;
+        const yearTo   = parseInt(document.getElementById('fYearTo').value)     || 9999;
+
+        const filtered = allCars.filter(car => {
+            if (district && car.location !== district) return false;
+            if (car.price < priceMin || car.price > priceMax) return false;
+            if (car.year  < yearFrom || car.year  > yearTo)   return false;
+            return true;
+        });
+
+        renderCars(filtered);
+    }
+
+    function renderCars(cars) {
+        const grid  = document.getElementById('carGrid');
+        const empty = document.getElementById('emptyState');
+
+        grid.innerHTML = '';
+        document.getElementById('carCount').textContent = cars.length;
+
+        if (cars.length === 0) {
+            empty.style.display = 'block';
+        } else {
+            empty.style.display = 'none';
+            cars.forEach(car => grid.appendChild(buildCard(car)));
+        }
+    }
+
     function buildCard(car) {
         const card = document.createElement('div');
         card.className = 'car-card';
         card.onclick = () => window.location.href = `/car-detail?id=${car.id}`;
 
-        // Image section — show placeholder if no image uploaded
         const imgHtml = car.imagePath
             ? `<img class="car-card-img" src="/uploads/${car.imagePath}" alt="${car.brand} ${car.model}" onerror="this.parentElement.innerHTML='<div class=\\'car-card-img-placeholder\\'>🚗</div>'">`
             : `<div class="car-card-img-placeholder">🚗</div>`;
 
-        // Format price with commas
-        const price = Number(car.price).toLocaleString('en-US');
-
-        // Format mileage
+        const price   = Number(car.price).toLocaleString('en-US');
         const mileage = Number(car.mileage).toLocaleString('en-US');
 
         card.innerHTML = `
@@ -444,28 +687,26 @@
             ${car.location ? `<span>${car.location}</span>` : ''}
           </div>
           <div class="car-card-footer">
-            <div class="car-card-price">$${price}</div>
+            <div class="car-card-price">Rs. ${price}</div>
             <span class="card-arrow">→</span>
           </div>
         </div>
       `;
-
         return card;
     }
 
-    // ── SEARCH ──
-    // Reads the search input and calls the search endpoint.
-    // If empty, reloads all cars.
     function searchCars() {
-        const query = document.getElementById('searchInput').value.trim();
-        if (!query) {
-            loadCars('/api/cars');
-        } else {
-            loadCars(`/api/cars/search?brand=${encodeURIComponent(query)}`);
-        }
+        const brand    = document.getElementById('searchBrand').value.trim();
+        const location = document.getElementById('searchLocation').value;
+
+        const params = new URLSearchParams();
+        if (brand)    params.append('brand', brand);
+        if (location) params.append('location', location);
+
+        const query = params.toString();
+        loadCars(query ? `/api/cars/search?${query}` : '/api/cars');
     }
 
-    // ── TOAST ──
     function showToast(msg) {
         const toast = document.getElementById('toastBar');
         toast.textContent = msg;

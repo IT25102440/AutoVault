@@ -1,5 +1,7 @@
 package com.carplatform.car_platform.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
@@ -9,8 +11,14 @@ import java.util.List;
 @Getter @Setter @NoArgsConstructor
 public class Seller extends User {
 
-    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Car> cars;
+
+    @JsonProperty("carCount")
+    public int getCarCount() {
+        return cars != null ? cars.size() : 0;
+    }
 
     @Override
     public String getDashboard() {

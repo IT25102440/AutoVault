@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,6 +32,8 @@ public class SecurityConfig {
         return email -> {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
+            System.out.println("Loading user: " + user.getEmail() + " role: " + user.getDashboard());
+            System.out.println("Password hash length: " + user.getPassword().length());
 
             return new org.springframework.security.core.userdetails.User(
                     user.getEmail(),
@@ -45,6 +50,16 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public AuthenticationManager authenticationManager(
+            UserDetailsService userDetailsService,
+            BCryptPasswordEncoder passwordEncoder) throws Exception {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+        return new ProviderManager(provider);
+    }
+
     //define access rules for all endpoints
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -58,6 +73,10 @@ public class SecurityConfig {
                                 "/login", "/login/", "/login/**",
                                 "/register", "/register/", "/register/**",
                                 "/car-detail", "/car-detail/", "/car-detail/**",
+                                "/seller-dashboard", "/seller-dashboard/", "/seller-dashboard/**",
+                                "/add-car", "/add-car/", "/add-car/**",
+                                "/edit-car", "/edit-car/", "/edit-car/**",
+                                "/admin-dashboard", "/admin-dashboard/", "/admin-dashboard/**",
                                 "/css/**", "/js/**", "/images/**"
                         ).permitAll()
                         .requestMatchers("/uploads/**").permitAll()
@@ -66,13 +85,14 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
+                        .loginPage("/login")
                         .loginProcessingUrl("/api/auth/login")
                         .defaultSuccessUrl("/api/auth/me", false)
+                        .permitAll()
                         .failureHandler((request, response, exception) -> {
                             response.setStatus(401);
                             response.getWriter().write("{\"message\":\"Invalid email or password\"}");
                         })
-                        .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/api/auth/logout")

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="icon" type="image/png" href="/icns/favicon.png"/>
     <title>AutoLane — Add Car</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -160,6 +161,7 @@
         .field-wrap select:focus { border-color: var(--accent); }
         .field-wrap input::placeholder { color: #555; }
         .field-wrap select option { background: var(--grey); }
+        .field-wrap select { cursor: pointer; appearance: none; }
 
         /* ── IMAGE UPLOAD ZONE ── */
         .upload-zone {
@@ -342,8 +344,35 @@
                     <input type="number" id="price" placeholder="e.g. 12500" min="0" step="0.01" required />
                 </div>
                 <div class="field-wrap">
-                    <label for="location">Location</label>
-                    <input type="text" id="location" placeholder="e.g. Colombo, Sri Lanka" />
+                    <label for="location">District</label>
+                    <select id="location">
+                        <option value="">Select a district</option>
+                        <option value="Ampara">Ampara</option>
+                        <option value="Anuradhapura">Anuradhapura</option>
+                        <option value="Badulla">Badulla</option>
+                        <option value="Batticaloa">Batticaloa</option>
+                        <option value="Colombo">Colombo</option>
+                        <option value="Galle">Galle</option>
+                        <option value="Gampaha">Gampaha</option>
+                        <option value="Hambantota">Hambantota</option>
+                        <option value="Jaffna">Jaffna</option>
+                        <option value="Kalutara">Kalutara</option>
+                        <option value="Kandy">Kandy</option>
+                        <option value="Kegalle">Kegalle</option>
+                        <option value="Kilinochchi">Kilinochchi</option>
+                        <option value="Kurunegala">Kurunegala</option>
+                        <option value="Mannar">Mannar</option>
+                        <option value="Matale">Matale</option>
+                        <option value="Matara">Matara</option>
+                        <option value="Monaragala">Monaragala</option>
+                        <option value="Mullaitivu">Mullaitivu</option>
+                        <option value="Nuwara Eliya">Nuwara Eliya</option>
+                        <option value="Polonnaruwa">Polonnaruwa</option>
+                        <option value="Puttalam">Puttalam</option>
+                        <option value="Ratnapura">Ratnapura</option>
+                        <option value="Trincomalee">Trincomalee</option>
+                        <option value="Vavuniya">Vavuniya</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -353,11 +382,7 @@
             <div class="form-section-title">Car Photo</div>
 
             <div class="upload-zone" id="uploadZone">
-                <!--
-                  This file input is what actually sends the image to the backend.
-                  The name "image" must match the @RequestParam("image") MultipartFile
-                  parameter in your SellerController.addCar() method.
-                -->
+                <!-- name="image" must match @RequestPart in SellerController -->
                 <input
                         type="file"
                         id="imageInput"
@@ -388,13 +413,10 @@
 </div>
 
 <footer>
-    <p>© 2025 AutoLane · SE1020 University Project</p>
+    <p>© 2026 AutoLane | WD.08.1.149</p>
 </footer>
 
 <script>
-    // ── AUTH GUARD ──
-    // Check session before anything else.
-    // If not logged in, redirect to login.
     document.addEventListener('DOMContentLoaded', async () => {
         try {
             const res = await fetch('/api/auth/me', { credentials: 'include' });
@@ -410,24 +432,19 @@
             window.location.href = '/login';
         }
 
-        // Set up drag-and-drop events on the upload zone
         setupUploadZone();
     });
 
-    // ── IMAGE UPLOAD ZONE ──
-    // Wire up drag-and-drop behaviour and the file input change event.
     function setupUploadZone() {
         const zone = document.getElementById('uploadZone');
         const input = document.getElementById('imageInput');
 
-        // Show preview when file is selected via the file picker
         input.addEventListener('change', () => {
             if (input.files && input.files[0]) {
                 showPreview(input.files[0]);
             }
         });
 
-        // Drag-and-drop visual feedback
         zone.addEventListener('dragover', e => {
             e.preventDefault();
             zone.classList.add('dragover');
@@ -438,7 +455,7 @@
             zone.classList.remove('dragover');
             const file = e.dataTransfer.files[0];
             if (file && file.type.startsWith('image/')) {
-                // Assign dropped file to the input so it's included in FormData
+                // put dropped file into the input so FormData picks it up
                 const dt = new DataTransfer();
                 dt.items.add(file);
                 input.files = dt.files;
@@ -447,7 +464,6 @@
         });
     }
 
-    // ── IMAGE PREVIEW ──
     function showPreview(file) {
         const preview = document.getElementById('imagePreview');
         const img = document.getElementById('previewImg');
@@ -467,15 +483,9 @@
         document.getElementById('previewImg').src = '';
     }
 
-    // ── HANDLE SUBMIT ──
-    // This is the most important function on this page.
-    // We use FormData — NOT JSON — because we're sending a file.
-    // FormData automatically sets the Content-Type to multipart/form-data,
-    // which is what your SellerController expects for the image upload.
     async function handleSubmit() {
         const btn = document.getElementById('submitBtn');
 
-        // Read values from form fields
         const brand = document.getElementById('brand').value.trim();
         const model = document.getElementById('model').value.trim();
         const year = document.getElementById('year').value.trim();
@@ -484,7 +494,6 @@
         const location = document.getElementById('location').value.trim();
         const imageFile = document.getElementById('imageInput').files[0];
 
-        // ── CLIENT-SIDE VALIDATION ──
         if (!brand || !model || !year || !mileage || !price) {
             showAlert('error', 'Please fill in all required fields (marked with *).');
             return;
@@ -500,19 +509,11 @@
             return;
         }
 
-        // ── BUILD FORM DATA ──
-        // FormData bundles text fields AND the file together in one request.
-        // The field names here ("brand", "model", etc.) must match the
-        // @RequestParam names in your SellerController, OR the fields in your CarDTO.
+        // multipart — can't use JSON when sending a file
         const formData = new FormData();
-        formData.append('brand', brand);
-        formData.append('model', model);
-        formData.append('year', year);
-        formData.append('mileage', mileage);
-        formData.append('price', price);
-        formData.append('location', location);
+        const carData = { brand, model, year: Number(year), mileage: Number(mileage), price: Number(price), location };
+        formData.append('car', new Blob([JSON.stringify(carData)], { type: 'application/json' }));
 
-        // Only append the image if one was selected — it's optional
         if (imageFile) {
             formData.append('image', imageFile);
         }
@@ -522,15 +523,11 @@
         hideAlerts();
 
         try {
-            // POST /api/seller/cars
-            // DO NOT set Content-Type header manually — the browser sets it
-            // automatically with the correct multipart boundary when using FormData.
-            // If you set it manually, the request will break.
+            // no Content-Type header — browser sets the multipart boundary automatically
             const res = await fetch('/api/seller/cars', {
                 method: 'POST',
                 credentials: 'include',
                 body: formData
-                // ← No 'Content-Type' header here — this is intentional!
             });
 
             if (res.ok) {
@@ -557,7 +554,6 @@
         }
     }
 
-    // ── HELPERS ──
     function showAlert(type, msg) {
         hideAlerts();
         const el = document.getElementById(type === 'error' ? 'errorMsg' : 'successMsg');

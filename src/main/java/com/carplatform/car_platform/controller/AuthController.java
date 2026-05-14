@@ -35,10 +35,12 @@ public class AuthController {
             return ResponseEntity.status(401).body(Map.of("message", "Not logged in"));
         }
         User user = userService.findByEmail(principal.getName());
+        String role = user.getDashboard().replace("-dashboard", "").toUpperCase();
         return ResponseEntity.ok(Map.of(
                 "id", user.getId(),
                 "name", user.getName(),
                 "email", user.getEmail(),
+                "role", role,
                 "dashboard", user.getDashboard()
         ));
     }
