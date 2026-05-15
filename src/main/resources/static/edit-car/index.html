@@ -7,156 +7,18 @@
     <title>AutoLane — Edit Car</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/style.css"/>
     <style>
-        :root {
-            --black: #0d0d0d;
-            --white: #f5f4f0;
-            --accent: #e8ff47;
-            --grey: #1a1a1a;
-            --muted: #888;
-            --card-bg: #161616;
-            --border: #2a2a2a;
-            --error: #ff4444;
-            --success: #47ff8a;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            background-color: var(--black);
-            color: var(--white);
-            font-family: 'DM Sans', sans-serif;
-            min-height: 100vh;
-        }
-
-        /* ── NAVBAR ── */
-        .navbar {
-            background: var(--black);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .navbar-brand {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 2rem;
-            color: var(--accent) !important;
-            letter-spacing: 2px;
-            text-decoration: none;
-        }
-        .navbar-brand span { color: var(--white); }
-        .nav-btn {
-            border: 1px solid var(--border);
-            color: var(--muted);
-            background: transparent;
-            padding: 0.4rem 1.2rem;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-        .nav-btn:hover { border-color: var(--white); color: var(--white); }
-
-        /* ── PAGE LAYOUT ── */
-        .page-wrap {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 0 2rem 4rem;
-        }
-
-        .page-eyebrow {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--accent);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        .page-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 3rem;
-            letter-spacing: 1px;
-            line-height: 1;
-            margin-bottom: 0.5rem;
-        }
+        /* ── PAGE TITLE SUBTITLE ── */
         .page-title span {
             color: var(--muted);
             font-size: 1.5rem;
             display: block;
             margin-top: 0.2rem;
         }
-        .page-sub {
-            color: var(--muted);
-            font-size: 0.85rem;
-            margin-bottom: 2.5rem;
-        }
-
-        /* ── FORM CARD ── */
-        .form-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 2rem;
-        }
-
-        /* ── SECTION DIVIDER ── */
-        .form-section {
-            margin-bottom: 2rem;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid var(--border);
-        }
-        .form-section:last-of-type { border-bottom: none; margin-bottom: 0; }
-        .form-section-title {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--muted);
-            margin-bottom: 1.2rem;
-        }
-
-        /* ── FIELD GRID ── */
-        .field-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-        @media (max-width: 600px) { .field-grid { grid-template-columns: 1fr; } }
-
-        /* ── FIELD ── */
-        .field-wrap { display: flex; flex-direction: column; }
-        .field-wrap label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--muted);
-            margin-bottom: 0.5rem;
-        }
-        .field-wrap input,
-        .field-wrap select {
-            background: var(--grey);
-            border: 1px solid var(--border);
-            color: var(--white);
-            padding: 0.85rem 1rem;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.2s;
-            width: 100%;
-        }
-        .field-wrap input:focus,
-        .field-wrap select:focus { border-color: var(--accent); }
-        .field-wrap input::placeholder { color: #555; }
-        .field-wrap select { cursor: pointer; appearance: none; }
-        .field-wrap select option { background: var(--grey); color: var(--white); }
 
         /* ── CURRENT IMAGE ── */
-        .current-image-wrap {
-            margin-bottom: 1rem;
-        }
+        .current-image-wrap { margin-bottom: 1rem; }
         .current-image-label {
             font-size: 0.75rem;
             text-transform: uppercase;
@@ -188,33 +50,11 @@
             letter-spacing: 1px;
         }
 
-        /* ── UPLOAD ZONE ── */
-        .upload-zone {
-            border: 2px dashed var(--border);
-            background: var(--grey);
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: border-color 0.2s, background 0.2s;
-            position: relative;
-        }
-        .upload-zone:hover,
-        .upload-zone.dragover {
-            border-color: var(--accent);
-            background: #1e1e1e;
-        }
-        .upload-zone input[type="file"] {
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            cursor: pointer;
-            width: 100%;
-            height: 100%;
-        }
-        .upload-icon { font-size: 1.8rem; margin-bottom: 0.5rem; display: block; }
-        .upload-label { font-size: 0.85rem; color: var(--white); font-weight: 500; }
-        .upload-hint { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
-        .upload-hint span { color: var(--accent); }
+        /* ── UPLOAD ZONE (smaller variant for edit page) ── */
+        .upload-zone { padding: 2rem; }
+        .upload-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .upload-label { font-size: 0.85rem; }
+        .upload-hint { margin-top: 0.2rem; font-size: 0.75rem; }
 
         /* ── NEW IMAGE PREVIEW ── */
         .new-preview {
@@ -242,107 +82,23 @@
             text-transform: uppercase;
             cursor: pointer;
         }
-
-        /* ── ALERT ── */
-        .alert-msg {
-            padding: 0.75rem 1rem;
-            font-size: 0.85rem;
-            margin-bottom: 1.5rem;
-            display: none;
-        }
-        .alert-msg.show { display: block; }
-        .alert-msg.error {
-            background: rgba(255, 68, 68, 0.1);
-            border: 1px solid var(--error);
-            color: var(--error);
-        }
-        .alert-msg.success {
-            background: rgba(71, 255, 138, 0.1);
-            border: 1px solid var(--success);
-            color: var(--success);
-        }
-
-        /* ── LOADING STATE ── */
-        .state-wrap {
-            text-align: center;
-            padding: 5rem 2rem;
-            color: var(--muted);
-        }
-        .state-wrap .state-icon { font-size: 3rem; display: block; margin-bottom: 1rem; }
-
-        /* ── FORM ACTIONS ── */
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border);
-        }
-        .submit-btn {
-            flex: 1;
-            background: var(--accent);
-            color: var(--black);
-            border: 1px solid var(--accent);
-            padding: 0.9rem;
-            font-family: 'DM Sans', sans-serif;
-            font-weight: 700;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .submit-btn:hover { background: transparent; color: var(--accent); }
-        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .cancel-btn {
-            background: transparent;
-            color: var(--muted);
-            border: 1px solid var(--border);
-            padding: 0.9rem 1.5rem;
-            font-family: 'DM Sans', sans-serif;
-            font-weight: 600;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-        }
-        .cancel-btn:hover { border-color: var(--white); color: var(--white); }
-
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 1.5rem 2rem;
-            text-align: center;
-            color: var(--muted);
-            font-size: 0.8rem;
-        }
     </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar d-flex justify-content-between align-items-center">
-    <a href="/" class="navbar-brand">Auto<span>Lane</span></a>
-    <a href="/seller-dashboard" class="nav-btn">← Dashboard</a>
-</nav>
+<div id="navbar-root" data-mode="back-dashboard"></div>
 
-<!-- LOADING STATE — shown while car data is being fetched -->
 <div id="loadingState" class="state-wrap">
     <span class="state-icon">⏳</span>
     <p>Loading car details...</p>
 </div>
 
-<!-- ERROR STATE — shown if car not found or not owned by this seller -->
 <div id="errorState" class="state-wrap" style="display:none;">
     <span class="state-icon">🚫</span>
     <p>Car not found or you don't have permission to edit it.</p>
     <a href="/seller-dashboard" style="color:var(--accent);margin-top:1rem;display:inline-block;">← Back to Dashboard</a>
 </div>
 
-<!-- MAIN FORM — hidden until car data loads -->
 <div class="page-wrap" id="formWrap" style="display:none;">
 
     <div class="page-eyebrow">Edit Listing</div>
@@ -357,7 +113,6 @@
 
     <div class="form-card">
 
-        <!-- SECTION 1: Car Details -->
         <div class="form-section">
             <div class="form-section-title">Car Details</div>
             <div class="field-grid">
@@ -380,7 +135,6 @@
             </div>
         </div>
 
-        <!-- SECTION 2: Pricing & Location -->
         <div class="form-section">
             <div class="form-section-title">Pricing & Location</div>
             <div class="field-grid">
@@ -390,49 +144,19 @@
                 </div>
                 <div class="field-wrap">
                     <label for="location">District</label>
-                    <select id="location">
-                        <option value="">Select a district</option>
-                        <option value="Ampara">Ampara</option>
-                        <option value="Anuradhapura">Anuradhapura</option>
-                        <option value="Badulla">Badulla</option>
-                        <option value="Batticaloa">Batticaloa</option>
-                        <option value="Colombo">Colombo</option>
-                        <option value="Galle">Galle</option>
-                        <option value="Gampaha">Gampaha</option>
-                        <option value="Hambantota">Hambantota</option>
-                        <option value="Jaffna">Jaffna</option>
-                        <option value="Kalutara">Kalutara</option>
-                        <option value="Kandy">Kandy</option>
-                        <option value="Kegalle">Kegalle</option>
-                        <option value="Kilinochchi">Kilinochchi</option>
-                        <option value="Kurunegala">Kurunegala</option>
-                        <option value="Mannar">Mannar</option>
-                        <option value="Matale">Matale</option>
-                        <option value="Matara">Matara</option>
-                        <option value="Monaragala">Monaragala</option>
-                        <option value="Mullaitivu">Mullaitivu</option>
-                        <option value="Nuwara Eliya">Nuwara Eliya</option>
-                        <option value="Polonnaruwa">Polonnaruwa</option>
-                        <option value="Puttalam">Puttalam</option>
-                        <option value="Ratnapura">Ratnapura</option>
-                        <option value="Trincomalee">Trincomalee</option>
-                        <option value="Vavuniya">Vavuniya</option>
-                    </select>
+                    <select id="location"></select>
                 </div>
             </div>
         </div>
 
-        <!-- SECTION 3: Image -->
         <div class="form-section">
             <div class="form-section-title">Car Photo</div>
 
-            <!-- Shows the existing image already saved on the server -->
             <div class="current-image-wrap" id="currentImageWrap">
                 <div class="current-image-label">Current Photo</div>
                 <div id="currentImageSlot"></div>
             </div>
 
-            <!-- Option to replace with a new image -->
             <div class="replace-label">Replace Photo (optional)</div>
             <div class="upload-zone" id="uploadZone">
                 <input
@@ -466,19 +190,17 @@
     <p>© 2026 AutoLane | WD.08.1.149</p>
 </footer>
 
+<script src="/js/auth.js"></script>
+<script src="/js/navbar.js"></script>
+<script src="/js/utils.js"></script>
 <script>
     let carId = null;
 
     document.addEventListener('DOMContentLoaded', async () => {
-        try {
-            const authRes = await fetch('/api/auth/me', { credentials: 'include' });
-            if (!authRes.ok) { window.location.href = '/login'; return; }
-            const user = await authRes.json();
-            if (user.role !== 'SELLER') { window.location.href = '/login'; return; }
-        } catch (err) {
-            window.location.href = '/login';
-            return;
-        }
+        populateDistricts('location', 'Select a district');
+
+        const user = await requireRole('SELLER');
+        if (!user) return;
 
         const params = new URLSearchParams(window.location.search);
         carId = params.get('id');
@@ -585,7 +307,6 @@
         const location = document.getElementById('location').value.trim();
         const imageFile = document.getElementById('imageInput').files[0];
 
-        // Validation
         if (!brand || !model || !year || !mileage || !price) {
             showAlert('error', 'Please fill in all required fields.');
             return;

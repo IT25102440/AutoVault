@@ -7,119 +7,13 @@
     <title>AutoLane — Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/style.css"/>
     <style>
-        :root {
-            --black: #0d0d0d;
-            --white: #f5f4f0;
-            --accent: #e8ff47;
-            --grey: #1a1a1a;
-            --muted: #888;
-            --card-bg: #161616;
-            --border: #2a2a2a;
-            --error: #ff4444;
-            --success: #47ff8a;
-            --admin: #ff9f47;
-        }
+        /* ── ADMIN OVERRIDES ── */
+        .profile-avatar-lg { background: var(--admin); }
+        .profile-role-tag { color: var(--admin); }
+        .stat-box .stat-value.orange { color: var(--admin); }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            background-color: var(--black);
-            color: var(--white);
-            font-family: 'DM Sans', sans-serif;
-            min-height: 100vh;
-        }
-
-        /* ── NAVBAR ── */
-        .navbar {
-            background: var(--black);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .navbar-brand {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 2rem;
-            color: var(--accent) !important;
-            letter-spacing: 2px;
-            text-decoration: none;
-        }
-        .navbar-brand span { color: var(--white); }
-        .admin-badge {
-            background: var(--admin);
-            color: var(--black);
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 0.2rem 0.6rem;
-            margin-left: 0.75rem;
-            vertical-align: middle;
-        }
-        .nav-btn {
-            border: 1px solid var(--border);
-            color: var(--muted);
-            background: transparent;
-            padding: 0.4rem 1.2rem;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .nav-btn:hover { border-color: var(--error); color: var(--error); }
-
-        /* ── PAGE HEADER ── */
-        .page-header {
-            padding: 1.75rem 2rem;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .profile-block {
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-        }
-        .profile-avatar-lg {
-            width: 58px;
-            height: 58px;
-            background: var(--admin);
-            color: var(--black);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.9rem;
-            letter-spacing: 1px;
-            flex-shrink: 0;
-        }
-        .profile-role-tag {
-            font-size: 0.62rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--admin);
-            margin-bottom: 0.2rem;
-        }
-        .profile-name-lg {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 2.2rem;
-            letter-spacing: 1px;
-            line-height: 1;
-        }
-        .profile-email-lg {
-            font-size: 0.82rem;
-            color: var(--muted);
-            margin-top: 0.25rem;
-        }
         .page-header-label {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 1rem;
@@ -127,32 +21,6 @@
             color: var(--muted);
             text-align: right;
         }
-
-        /* ── STATS ROW ── */
-        .stats-row {
-            display: flex;
-            gap: 1px;
-            background: var(--border);
-            border-bottom: 1px solid var(--border);
-        }
-        .stat-box {
-            flex: 1;
-            background: var(--black);
-            padding: 1.2rem 2rem;
-        }
-        .stat-box .stat-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--muted);
-            margin-bottom: 0.3rem;
-        }
-        .stat-box .stat-value {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 2rem;
-            letter-spacing: 1px;
-        }
-        .stat-box .stat-value.orange { color: var(--admin); }
 
         /* ── TABS ── */
         .tab-bar {
@@ -175,13 +43,8 @@
             margin-bottom: -1px;
             transition: color 0.2s, border-color 0.2s;
         }
-        .tab-btn.active {
-            color: var(--white);
-            border-bottom-color: var(--accent);
-        }
+        .tab-btn.active { color: var(--white); border-bottom-color: var(--accent); }
         .tab-btn:hover:not(.active) { color: var(--white); }
-
-        /* ── TAB CONTENT ── */
         .tab-panel { display: none; padding: 2rem; }
         .tab-panel.active { display: block; }
 
@@ -207,7 +70,6 @@
             transition: background 0.2s;
         }
         .car-row:hover { background: #1a1a1a; }
-
         .car-thumb {
             width: 70px;
             height: 48px;
@@ -225,23 +87,9 @@
             font-size: 1.2rem;
             color: var(--border);
         }
-
-        .car-info .car-name {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.2rem;
-            letter-spacing: 0.5px;
-            line-height: 1.1;
-        }
-        .car-info .car-meta {
-            font-size: 0.78rem;
-            color: var(--muted);
-            margin-top: 0.15rem;
-        }
-        .car-info .car-seller {
-            font-size: 0.78rem;
-            color: var(--admin);
-            margin-top: 0.1rem;
-        }
+        .car-info .car-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.5px; line-height: 1.1; }
+        .car-info .car-meta { font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
+        .car-info .car-seller { font-size: 0.78rem; color: var(--admin); margin-top: 0.1rem; }
 
         /* ── SELLER ROW ── */
         .seller-row {
@@ -256,7 +104,6 @@
             transition: background 0.2s;
         }
         .seller-row:hover { background: #1a1a1a; }
-
         .seller-avatar {
             width: 44px;
             height: 44px;
@@ -270,20 +117,9 @@
             color: var(--accent);
             flex-shrink: 0;
         }
-        .seller-info .seller-name {
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-        .seller-info .seller-email {
-            font-size: 0.8rem;
-            color: var(--muted);
-            margin-top: 0.1rem;
-        }
-        .seller-info .seller-count {
-            font-size: 0.75rem;
-            color: var(--admin);
-            margin-top: 0.1rem;
-        }
+        .seller-info .seller-name { font-weight: 600; font-size: 0.95rem; }
+        .seller-info .seller-email { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
+        .seller-info .seller-count { font-size: 0.75rem; color: var(--admin); margin-top: 0.1rem; }
 
         /* ── DELETE BUTTON ── */
         .del-btn {
@@ -302,95 +138,14 @@
         }
         .del-btn:hover { border-color: var(--error); color: var(--error); }
 
-        /* ── STATES ── */
-        .state-wrap {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--muted);
-        }
-        .state-wrap .state-icon { font-size: 2.5rem; display: block; margin-bottom: 0.75rem; }
-
-        /* ── CONFIRM MODAL ── */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.85);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-        }
-        .modal-overlay.show { display: flex; }
-        .modal-box {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 2rem;
-            max-width: 380px;
-            width: 90%;
-        }
-        .modal-box h3 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-        }
-        .modal-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
-        .modal-actions { display: flex; gap: 0.75rem; }
-        .modal-btn {
-            flex: 1;
-            padding: 0.75rem;
-            font-family: 'DM Sans', sans-serif;
-            font-weight: 700;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid var(--border);
-        }
-        .modal-btn.cancel { background: transparent; color: var(--white); }
-        .modal-btn.cancel:hover { border-color: var(--white); }
-        .modal-btn.confirm { background: var(--error); color: white; border-color: var(--error); }
-        .modal-btn.confirm:hover { background: transparent; color: var(--error); }
-
-        /* ── TOAST ── */
-        .toast-bar {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            font-size: 0.9rem;
-            font-weight: 500;
-            z-index: 99999;
-            transition: transform 0.3s ease;
-            pointer-events: none;
-        }
-        .toast-bar.show { transform: translateX(-50%) translateY(0); }
-        .toast-bar.error { background: var(--error); }
-        .toast-bar.success { background: #1a1a1a; border: 1px solid var(--success); color: var(--success); }
-
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 1.5rem 2rem;
-            text-align: center;
-            color: var(--muted);
-            font-size: 0.8rem;
-        }
+        .state-wrap { padding: 4rem 2rem; }
+        .state-wrap .state-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
     </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar d-flex justify-content-between align-items-center">
-    <div>
-        <a href="/" class="navbar-brand">Auto<span>Lane</span></a>
-        <span class="admin-badge">Admin</span>
-    </div>
-    <button class="nav-btn" onclick="handleLogout()">Log Out</button>
-</nav>
+<div id="navbar-root" data-mode="admin-nav"></div>
 
-<!-- PAGE HEADER -->
 <div class="page-header">
     <div class="profile-block">
         <div class="profile-avatar-lg" id="profileAvatar">?</div>
@@ -403,7 +158,6 @@
     <div class="page-header-label">Control Centre</div>
 </div>
 
-<!-- STATS -->
 <div class="stats-row">
     <div class="stat-box">
         <div class="stat-label">Total Cars</div>
@@ -415,17 +169,11 @@
     </div>
 </div>
 
-<!-- TABS -->
 <div class="tab-bar">
-    <button class="tab-btn active" onclick="switchTab('cars', this)">
-        All Cars
-    </button>
-    <button class="tab-btn" onclick="switchTab('sellers', this)">
-        All Sellers
-    </button>
+    <button class="tab-btn active" onclick="switchTab('cars', this)">All Cars</button>
+    <button class="tab-btn" onclick="switchTab('sellers', this)">All Sellers</button>
 </div>
 
-<!-- TAB: CARS -->
 <div class="tab-panel active" id="tab-cars">
     <div class="section-label">All Listings</div>
     <div id="carsLoading" class="state-wrap">
@@ -439,7 +187,6 @@
     <div id="carsList"></div>
 </div>
 
-<!-- TAB: SELLERS -->
 <div class="tab-panel" id="tab-sellers">
     <div class="section-label">Registered Sellers</div>
     <div id="sellersLoading" class="state-wrap">
@@ -453,7 +200,6 @@
     <div id="sellersList"></div>
 </div>
 
-<!-- CONFIRM MODAL -->
 <div class="modal-overlay" id="deleteModal">
     <div class="modal-box">
         <h3 id="modalTitle">Confirm Delete</h3>
@@ -471,30 +217,17 @@
     <p>© 2026 AutoLane | WD.08.1.149</p>
 </footer>
 
+<script src="/js/auth.js"></script>
+<script src="/js/navbar.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', async () => {
-        // auth guard — must be ADMIN
-        try {
-            const res = await fetch('/api/auth/me', { credentials: 'include' });
-            if (!res.ok) { window.location.href = '/login'; return; }
+        const user = await requireRole('ADMIN', { wrongRoleUrl: '/seller-dashboard' });
+        if (!user) return;
 
-            const user = await res.json();
+        document.getElementById('profileAvatar').textContent = user.name.charAt(0).toUpperCase();
+        document.getElementById('profileName').textContent = user.name;
+        document.getElementById('profileEmail').textContent = user.email;
 
-            if (user.role !== 'ADMIN') {
-                window.location.href = '/seller-dashboard';
-                return;
-            }
-
-            document.getElementById('profileAvatar').textContent = user.name.charAt(0).toUpperCase();
-            document.getElementById('profileName').textContent = user.name;
-            document.getElementById('profileEmail').textContent = user.email;
-
-        } catch (err) {
-            window.location.href = '/login';
-            return;
-        }
-
-        // load both in parallel
         await Promise.all([loadCars(), loadSellers()]);
     });
 
@@ -673,17 +406,10 @@
         }
     }
 
-    async function handleLogout() {
-        try {
-            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-        } catch (_) {}
-        window.location.href = '/login';
-    }
-
-    function showToast(msg, type = 'error') {
+    function showToast(msg, type) {
         const toast = document.getElementById('toastBar');
         toast.textContent = msg;
-        toast.className = `toast-bar ${type} show`;
+        toast.className = 'toast-bar ' + (type || 'error') + ' show';
         setTimeout(() => toast.classList.remove('show'), 3000);
     }
 </script>

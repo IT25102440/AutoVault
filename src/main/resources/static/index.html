@@ -7,114 +7,8 @@
     <title>AutoLane - Second-Hand Cars</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/style.css"/>
     <style>
-        :root {
-            --black: #0d0d0d;
-            --white: #f5f4f0;
-            --accent: #e8ff47;
-            --grey: #1a1a1a;
-            --muted: #888;
-            --card-bg: #161616;
-            --border: #2a2a2a;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            background-color: var(--black);
-            color: var(--white);
-            font-family: 'DM Sans', sans-serif;
-            min-height: 100vh;
-        }
-
-        /* ── NAVBAR ── */
-        .navbar {
-            background: var(--black);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .navbar-brand {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 2rem;
-            color: var(--accent) !important;
-            letter-spacing: 2px;
-            text-decoration: none;
-        }
-        .navbar-brand span { color: var(--white); }
-        .nav-btn {
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            background: transparent;
-            padding: 0.4rem 1.2rem;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-        .nav-btn:hover {
-            background: var(--accent);
-            color: var(--black);
-        }
-        .nav-btn.filled {
-            background: var(--accent);
-            color: var(--black);
-        }
-        .nav-btn.filled:hover {
-            background: transparent;
-            color: var(--accent);
-        }
-        .nav-user-chip {
-            display: flex;
-            align-items: stretch;
-            border: 1px solid var(--border);
-            background: transparent;
-            text-decoration: none;
-            overflow: hidden;
-            transition: border-color 0.2s;
-        }
-        .nav-user-chip:hover {
-            border-color: var(--accent);
-        }
-        .nav-avatar {
-            width: 32px;
-            background: var(--accent);
-            color: var(--black);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.72rem;
-            text-transform: uppercase;
-            flex-shrink: 0;
-            border-right: 1px solid var(--border);
-        }
-        .nav-username {
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--white);
-            white-space: nowrap;
-            letter-spacing: 0;
-            text-transform: none;
-            padding: 0.35rem 1rem 0.35rem 0.7rem;
-        }
-        .nav-btn-logout {
-            border-color: var(--border);
-            color: var(--muted);
-            letter-spacing: 0.5px;
-        }
-        .nav-btn-logout:hover {
-            background: rgba(255,60,60,0.08);
-            border-color: #ff4747;
-            color: #ff4747;
-        }
-
         /* ── HERO ── */
         .hero {
             padding: 5rem 2rem 3rem;
@@ -142,10 +36,7 @@
             letter-spacing: 2px;
             position: relative;
         }
-        .hero h1 em {
-            font-style: normal;
-            color: var(--accent);
-        }
+        .hero h1 em { font-style: normal; color: var(--accent); }
         .hero p {
             color: var(--muted);
             font-size: 1rem;
@@ -215,11 +106,7 @@
             flex-wrap: wrap;
             border-bottom: 1px solid var(--border);
         }
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-        }
+        .filter-group { display: flex; flex-direction: column; gap: 0.3rem; }
         .filter-label {
             font-size: 0.6rem;
             font-weight: 600;
@@ -245,12 +132,7 @@
         .filter-input[type=number] { -moz-appearance: textfield; }
         .filter-range { display: flex; }
         .filter-range .filter-input:first-child { border-right: none; }
-        .filter-select {
-            width: auto;
-            min-width: 148px;
-            cursor: pointer;
-            appearance: none;
-        }
+        .filter-select { width: auto; min-width: 148px; cursor: pointer; appearance: none; }
         .filter-select option { background: var(--grey); }
         .filter-clear {
             background: transparent;
@@ -287,11 +169,7 @@
             padding: 0.2rem 0.6rem;
             letter-spacing: 1px;
         }
-        .divider {
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
+        .divider { flex: 1; height: 1px; background: var(--border); }
 
         /* ── CAR GRID ── */
         .car-grid {
@@ -312,7 +190,6 @@
         }
         .car-card:hover { background: #1e1e1e; }
         .car-card:hover .card-arrow { transform: translateX(4px); }
-
         .car-card-img {
             width: 100%;
             aspect-ratio: 16/10;
@@ -322,7 +199,6 @@
             transition: filter 0.3s;
         }
         .car-card:hover .car-card-img { filter: grayscale(0%); }
-
         .car-card-img-placeholder {
             width: 100%;
             aspect-ratio: 16/10;
@@ -333,7 +209,6 @@
             color: var(--muted);
             font-size: 2rem;
         }
-
         .car-card-body {
             padding: 1.2rem;
             flex: 1;
@@ -373,7 +248,6 @@
             vertical-align: middle;
         }
         .car-card-meta span:first-child::before { display: none; }
-
         .car-card-footer {
             display: flex;
             justify-content: space-between;
@@ -388,62 +262,12 @@
             letter-spacing: 0.5px;
             color: var(--white);
         }
-        .card-arrow {
-            font-size: 1.2rem;
-            color: var(--accent);
-            transition: transform 0.2s;
-        }
-
-        /* ── STATES ── */
-        .state-wrap {
-            text-align: center;
-            padding: 5rem 2rem;
-            color: var(--muted);
-        }
-        .state-wrap .state-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-        .state-wrap p { font-size: 1rem; }
-
-        /* ── TOAST ── */
-        .toast-bar {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #ff4444;
-            color: white;
-            padding: 0.8rem 1.5rem;
-            font-size: 0.9rem;
-            font-weight: 500;
-            z-index: 9999;
-            transition: transform 0.3s ease;
-            pointer-events: none;
-        }
-        .toast-bar.show { transform: translateX(-50%) translateY(0); }
-
-        /* ── FOOTER ── */
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 2rem;
-            text-align: center;
-            color: var(--muted);
-            font-size: 0.8rem;
-        }
+        .card-arrow { font-size: 1.2rem; color: var(--accent); transition: transform 0.2s; }
     </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar d-flex justify-content-between align-items-center">
-    <a href="/" class="navbar-brand">Auto<span>Lane</span></a>
-    <div class="d-flex gap-2 align-items-center" id="navActions">
-        <a href="/login" class="nav-btn">Login</a>
-        <a href="/register" class="nav-btn filled">Sign Up</a>
-    </div>
-</nav>
+<div id="navbar-root" data-mode="public"></div>
 
 <!-- HERO -->
 <section class="hero">
@@ -451,34 +275,7 @@
     <p>Browse hundreds of verified second-hand cars listed by real sellers.</p>
     <div class="search-wrap">
         <input type="text" id="searchBrand" placeholder="Brand — Toyota, Honda, BMW..." />
-        <select id="searchLocation">
-            <option value="">All Districts</option>
-            <option value="Ampara">Ampara</option>
-            <option value="Anuradhapura">Anuradhapura</option>
-            <option value="Badulla">Badulla</option>
-            <option value="Batticaloa">Batticaloa</option>
-            <option value="Colombo">Colombo</option>
-            <option value="Galle">Galle</option>
-            <option value="Gampaha">Gampaha</option>
-            <option value="Hambantota">Hambantota</option>
-            <option value="Jaffna">Jaffna</option>
-            <option value="Kalutara">Kalutara</option>
-            <option value="Kandy">Kandy</option>
-            <option value="Kegalle">Kegalle</option>
-            <option value="Kilinochchi">Kilinochchi</option>
-            <option value="Kurunegala">Kurunegala</option>
-            <option value="Mannar">Mannar</option>
-            <option value="Matale">Matale</option>
-            <option value="Matara">Matara</option>
-            <option value="Monaragala">Monaragala</option>
-            <option value="Mullaitivu">Mullaitivu</option>
-            <option value="Nuwara Eliya">Nuwara Eliya</option>
-            <option value="Polonnaruwa">Polonnaruwa</option>
-            <option value="Puttalam">Puttalam</option>
-            <option value="Ratnapura">Ratnapura</option>
-            <option value="Trincomalee">Trincomalee</option>
-            <option value="Vavuniya">Vavuniya</option>
-        </select>
+        <select id="searchLocation"></select>
         <button onclick="searchCars()">Search</button>
     </div>
 </section>
@@ -494,34 +291,7 @@
 <div class="filter-strip">
     <div class="filter-group">
         <div class="filter-label">District</div>
-        <select class="filter-input filter-select" id="fDistrict">
-            <option value="">All Districts</option>
-            <option value="Ampara">Ampara</option>
-            <option value="Anuradhapura">Anuradhapura</option>
-            <option value="Badulla">Badulla</option>
-            <option value="Batticaloa">Batticaloa</option>
-            <option value="Colombo">Colombo</option>
-            <option value="Galle">Galle</option>
-            <option value="Gampaha">Gampaha</option>
-            <option value="Hambantota">Hambantota</option>
-            <option value="Jaffna">Jaffna</option>
-            <option value="Kalutara">Kalutara</option>
-            <option value="Kandy">Kandy</option>
-            <option value="Kegalle">Kegalle</option>
-            <option value="Kilinochchi">Kilinochchi</option>
-            <option value="Kurunegala">Kurunegala</option>
-            <option value="Mannar">Mannar</option>
-            <option value="Matale">Matale</option>
-            <option value="Matara">Matara</option>
-            <option value="Monaragala">Monaragala</option>
-            <option value="Mullaitivu">Mullaitivu</option>
-            <option value="Nuwara Eliya">Nuwara Eliya</option>
-            <option value="Polonnaruwa">Polonnaruwa</option>
-            <option value="Puttalam">Puttalam</option>
-            <option value="Ratnapura">Ratnapura</option>
-            <option value="Trincomalee">Trincomalee</option>
-            <option value="Vavuniya">Vavuniya</option>
-        </select>
+        <select class="filter-input filter-select" id="fDistrict"></select>
     </div>
     <div class="filter-group">
         <div class="filter-label">Price (Rs.)</div>
@@ -540,11 +310,8 @@
     <button class="filter-clear" id="clearFilters">Clear</button>
 </div>
 
-<div class="car-grid" id="carGrid">
-    <!-- Cards injected by JS -->
-</div>
+<div class="car-grid" id="carGrid"></div>
 
-<!-- Loading / Empty states -->
 <div id="loadingState" class="state-wrap">
     <span class="state-icon">⏳</span>
     <p>Loading listings...</p>
@@ -554,19 +321,21 @@
     <p>No cars found. Try a different search.</p>
 </div>
 
-<!-- Toast for errors -->
 <div class="toast-bar" id="toastBar"></div>
 
 <footer>
     <p>© 2026 AutoLane | WD.08.1.149</p>
 </footer>
 
+<script src="/js/auth.js"></script>
+<script src="/js/navbar.js"></script>
+<script src="/js/utils.js"></script>
 <script>
     let allCars = [];
 
-    // ── ENTRY POINT ──
     document.addEventListener('DOMContentLoaded', () => {
-        initNav();
+        populateDistricts('searchLocation');
+        populateDistricts('fDistrict');
         loadCars('/api/cars');
 
         document.getElementById('searchBrand').addEventListener('keydown', e => {
@@ -576,7 +345,6 @@
             searchCars();
         });
 
-        // Filter strip listeners
         ['fPriceMin', 'fPriceMax', 'fYearFrom', 'fYearTo'].forEach(id => {
             document.getElementById(id).addEventListener('input', applyFilters);
         });
@@ -588,28 +356,6 @@
             applyFilters();
         });
     });
-
-    async function initNav() {
-        try {
-            const res = await fetch('/api/auth/me', { credentials: 'include' });
-            if (!res.ok) return;
-            const user = await res.json();
-            document.getElementById('navActions').innerHTML = `
-                <a href="/${user.dashboard}" class="nav-user-chip">
-                    <span class="nav-avatar">${user.name.charAt(0)}</span>
-                    <span class="nav-username">${user.name}</span>
-                </a>
-                <button class="nav-btn nav-btn-logout" onclick="handleLogout()">Log Out</button>
-            `;
-        } catch (_) {}
-    }
-
-    async function handleLogout() {
-        try {
-            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-        } catch (_) {}
-        window.location.href = '/login';
-    }
 
     async function loadCars(url) {
         const loading = document.getElementById('loadingState');

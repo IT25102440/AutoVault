@@ -7,52 +7,13 @@
     <title>AutoLane — Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/style.css"/>
     <style>
-        :root {
-            --black: #0d0d0d;
-            --white: #f5f4f0;
-            --accent: #e8ff47;
-            --grey: #1a1a1a;
-            --muted: #888;
-            --border: #2a2a2a;
-            --error: #ff4444;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
-            background-color: var(--black);
-            color: var(--white);
-            font-family: 'DM Sans', sans-serif;
-            min-height: 100vh;
             display: grid;
             grid-template-rows: auto 1fr auto;
         }
 
-        /* ── NAVBAR ── */
-        .navbar {
-            background: var(--black);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
-        }
-        .navbar-brand {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 2rem;
-            color: var(--accent) !important;
-            letter-spacing: 2px;
-            text-decoration: none;
-        }
-        .navbar-brand span { color: var(--white); }
-
-        /* ── PAGE LAYOUT ── */
-        .page-center {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 3rem 1rem;
-        }
-
-        /* ── CARD ── */
         .login-card {
             width: 100%;
             max-width: 420px;
@@ -61,52 +22,6 @@
             padding: 2.5rem;
         }
 
-        .card-eyebrow {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--accent);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        .card-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 2.8rem;
-            letter-spacing: 1px;
-            line-height: 1;
-            margin-bottom: 0.5rem;
-        }
-        .card-sub {
-            color: var(--muted);
-            font-size: 0.85rem;
-            margin-bottom: 2rem;
-        }
-
-        /* ── FORM FIELDS ── */
-        .field-wrap { margin-bottom: 1.2rem; }
-        .field-wrap label {
-            display: block;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--muted);
-            margin-bottom: 0.5rem;
-        }
-        .field-wrap input {
-            width: 100%;
-            background: var(--grey);
-            border: 1px solid var(--border);
-            color: var(--white);
-            padding: 0.85rem 1rem;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .field-wrap input:focus { border-color: var(--accent); }
-        .field-wrap input::placeholder { color: #555; }
-
-        /* ── ERROR MESSAGE ── */
         .error-msg {
             background: rgba(255, 68, 68, 0.1);
             border: 1px solid var(--error);
@@ -117,62 +32,12 @@
             display: none;
         }
         .error-msg.show { display: block; }
-
-        /* ── SUBMIT BUTTON ── */
-        .submit-btn {
-            width: 100%;
-            background: var(--accent);
-            color: var(--black);
-            border: 1px solid var(--accent);
-            padding: 0.9rem;
-            font-family: 'DM Sans', sans-serif;
-            font-weight: 700;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 0.5rem;
-        }
-        .submit-btn:hover { background: transparent; color: var(--accent); }
-        .submit-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* ── FOOTER LINK ── */
-        .card-footer-link {
-            margin-top: 1.5rem;
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--muted);
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border);
-        }
-        .card-footer-link a {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .card-footer-link a:hover { text-decoration: underline; }
-
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 1.5rem 2rem;
-            text-align: center;
-            color: var(--muted);
-            font-size: 0.8rem;
-        }
     </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar d-flex justify-content-between align-items-center">
-    <a href="/" class="navbar-brand">Auto<span>Lane</span></a>
-</nav>
+<div id="navbar-root" data-mode="auth"></div>
 
-<!-- CENTERED CARD -->
 <div class="page-center">
     <div class="login-card">
 
@@ -180,12 +45,10 @@
         <div class="card-title">Welcome Back</div>
         <div class="card-sub">Log in to manage your listings.</div>
 
-        <!-- Error message — shown if login fails -->
         <div class="error-msg" id="errorMsg">
             Invalid email or password. Please try again.
         </div>
 
-        <!-- field names must be "username" and "password" — Spring Security requirement -->
         <div class="field-wrap">
             <label for="username">Email Address</label>
             <input
@@ -225,8 +88,9 @@
     <p>© 2026 AutoLane | WD.08.1.149</p>
 </footer>
 
+<script src="/js/auth.js"></script>
+<script src="/js/navbar.js"></script>
 <script>
-    // redirect to dashboard if already in a session
     document.addEventListener('DOMContentLoaded', async () => {
         try {
             const res = await fetch('/api/auth/me', { credentials: 'include' });
@@ -276,7 +140,6 @@
                     btn.textContent = 'Log In →';
                 }
             } else {
-                // 401 — wrong credentials
                 showError('Invalid email or password. Please try again.');
                 btn.disabled = false;
                 btn.textContent = 'Log In →';
